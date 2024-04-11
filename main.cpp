@@ -2,10 +2,11 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include "dataWriting.h"
+#include "generalData.h"
 using namespace std;
 
 int main() {
-
+    WorldInfo temp;
+    temp.writeFile("hi");
     return 0;
 }
