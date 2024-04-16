@@ -48,7 +48,14 @@ public:
     int getStops() const;
     string getTimeOfDay() const;
 
+    flight getBest(string& filter);        //returns the best flight based on the filter passed in
 
+    flight cheapestFlight();     //FiXME parameters inputted should be two starting cities
+    bool flightExists();        //returns if the flight exists between two cities these cities should be the parameter
+    flight flightMonth();        //returns the flight between two places in a certain month if it exists, else just returns null
+    bool international();    //returns if the flight is international or not
+
+    void print(string& filter, int& flightNum); //prints the flight based off of filter and the best flight 
 };
 
 
