@@ -40,6 +40,7 @@ public:
     // Constructor to initialize all properties of the flight.
 
     // Getter methods to expose private properties in a controlled manner.
+//Work on returning flight object, get lowest price between two cities 
     string getOriginCity() const;
     string getDestinationCity() const;
     int getPrice() const;
