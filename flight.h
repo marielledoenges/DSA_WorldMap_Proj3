@@ -13,7 +13,7 @@ struct city{    //FIXME not sure if needed
 };
 
 // Represents an individual flight, holding all relevant details and providing methods for accessing these details.
-struct flights {
+struct flight {
     string originCity;    // The departure city of the flight.
     string destinationCity;   // The destination city of the flight.
     int price;    // Cost of the flight in USD.     //FIXME not sure if just whole number or double
@@ -25,7 +25,7 @@ struct flights {
     int flightNumber;       //how we will distinguish different flights
 
     //constructor of our flight object
-    flights(int& number) : originCity(""), destinationCity(""), price(0), duration(0), stops(0), timeOfDay(""), month(""), timeDiff(0), flightNumber(number){}
+    flight(int& number) : originCity(""), destinationCity(""), price(0), duration(0), stops(0), timeOfDay(""), month(""), timeDiff(0), flightNumber(number){}
 
 };
 
