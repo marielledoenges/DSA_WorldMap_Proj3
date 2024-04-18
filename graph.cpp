@@ -53,9 +53,6 @@ flight* Graph::createFlightHelper(string &cityFrom, string &cityTo, string &pric
     return current;
 }
 
-
-
-
 string Graph::cheapestDirect(string &origin) {
     string flightNum;
     int price;
@@ -74,50 +71,85 @@ string Graph::cheapestDirect(string &origin) {
     }
     return flightNum;
 }
+
 string Graph::directExists(string &origin, string &dest) {
     if (g[origin][dest].empty) {       //if there is not a graph number at this specific position then direct graph doesn't exist;
-        cout << "Direct graph between " << origin << " and " << dest << " does not exist." << endl << endl;
+        cout << "Direct flight between " << origin << " and " << dest << " does not exist." << endl << endl;
     }
     return g[origin][dest];        //else it exists return true
 }
 
-bool Graph::international(string &flightNum) {
-    return flightPair[flightNum]->intl;
+string Graph::flightMonth(string &origin, string &month) {      //FIXME might be better way to do this without copying so much code
+    string flightNum;
+    int price;
+    int min = 100000000;
+
+    for(int i = 0; i < 100; i++) {      //our grid is 100x100 so we know at most there's 100 iterations to go over whole line
+        string temp = g[origin][i];
+
+        if (!temp.empty()) {
+            price = flightPair[temp]->price;
+
+            if(price < min && flightPair[temp]->month == month) {
+                flightNum = temp;
+            }
+        }
+    }
+    return flightNum;
+}
+
+bool Graph::international(string &origin, string &dest) {
+    bool international = false;
+
+    //check cities and what countries they are from
+    return international;
+}
+
+vector<string> Graph::cheapestPath(string &origin, string &dest) {        //want to use djikstra's or another algorithm to get shortest path
+//returns a vector of flight numbers
 }
 
 void Graph::getBest(string &filter, string &origin, string &dest) {
     string flightNum;
-    bool goodFilter = true;
 
-    if (filter == "cheapest") {
+    if (filter == "Cheapest Direct Flight") {
         flightNum = cheapestDirect(origin);     //if the filter is cheap then we call cheapest graph helper function
     }
-    else if (filter == "direct") {
+    else if (filter == "Direct") {
         flightNum = directExists(origin, dest);     //if filter is direct, set graph number equal to
     }
-    else if (filter == "international") {
+    else if (filter == "Cheapest International Flight") {
 
     }
-    else if (filter == "filter 2") {        //FIXME
-
+    else if (filter == "International" || filter == "Domestic") {
+        bool international = international(origin, dest);
+        if (international) {
+            cout << "Flight is international. Passport is needed." << endl;
+        }
+        else {
+            cout << "Flight is domestic. No passport is needed." << endl;
+        }
+    }
+    else if (filter == "Month") {
+        string temp;
+        cout << "What month are you looking at flying? " << endl;
+        cin >> temp;
+        flightNum = flightMonth(origin, temp);
     }
     else {
-        filter.empty();
+        filter = "";
     }
 
-    print(filter, flightNum);
+    printBoardingPass(filter, flightNum);
 
 }
-void Graph::print(string &filter, string &flightNum) {
-    if (filter.empty()) {       //invalid filter was passed in
-        cout << "Error. Invalid Filter." << endl << endl;
-    }
-    else if (flightNum.empty()) {   //this type of flight does not exist
-        cout << "Flight does not exist." << endl << endl;
+void Graph::printBoardingPass(string &filter, string &flightNum) {
+    if (filter.empty() || flightNum.empty()) {       //either invalid filter, or no boarding pass to print because they just wanted info
+        cout << "Error. No Boarding Pass to Print." << endl << endl;
     }
     else {      //flight exists and a valid filter was passed in
         // print out all relevant graph info by accessing the graph from map
-        cout << "Based on " << filter << " flight filter, the best flight for you is:" << endl;
+        cout << "Based on " << filter << " flight filter, the best flight(s) for you is:" << endl;
         cout << "Flight number: " << flightNum << endl;
         cout << "Origin City: " << flightPair[flightNum]->originCity << endl;
         cout << "Destination City: " << flightPair[flightNum]->destinationCity << endl << endl;
@@ -129,6 +161,8 @@ void Graph::print(string &filter, string &flightNum) {
         cout << "The Price for This Flight is: " << flightPair[flightNum]->price << endl << endl;
     }
 }
+
+
 
 
 

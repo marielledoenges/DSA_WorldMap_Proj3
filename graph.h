@@ -69,35 +69,36 @@ public:
 
 class Graph{
 private:
-    set<string> cities;     //FIXME not necessarily needed
+    set<string> globalCities;     //keeps track of what cities have already been added
     map<string, flight*> flightPair;        //maps a specific flight number with a specific flight
     string g[100][100] = {};     //graph representation of matrix FIXME initialize all matrix entries with " " our graph map will store graph numbers
 
-    string cheapestDirect(string &origin);     //given a starting city, returns cheapest direct flight number
-    string directExists(string &origin, string &dest);        //returns flightNum if a direct graph exists between two cities
-    string flightMonth();        //returns the graph between two places in a certain month if it exists, else just returns null
-
-    bool international(string& flightNum);    //returns if the graph is international or not
     city* createCityHelper(string &cityName, string &countryName);
     flight* createFlightHelper(string &cityFrom, string &cityTo, string &price,string &distance, string &duration, string &timeZoneDiff,
                          string &month, string &date, string &departureTime, string &international, string &flightNum);    //create map helper
+
+    string cheapestDirect(string &origin);     //given a starting city, returns cheapest direct flight number
+    string directExists(string &origin, string &dest);        //returns flightNum if a direct graph exists between two cities
+    string flightMonth(string &origin, string  &month);        //returns the flight number of cheapest flight in a given month, returns empty if no flight exists
+    vector<string> cheapestPath(string &origin, string &dest);        //cheapest way to get between two places if possible, returns a vector of flight numbers. should be generalized
+    bool international(string &origin, string &dest);    //returns if the graph is international or not
 
 public:
     flight* current;
     city* myCity;
 
     // Getter methods to expose private properties in a controlled manner.
-    string getOriginCity() const;
+    /*string getOriginCity() const;
     string getDestinationCity() const;
     int getPrice() const;
     int getDuration() const;
     int getStops() const;
-    string getTimeOfDay() const;
+    string getTimeOfDay() const; */
 
     void createMap(string cityFrom, string countryFrom, string cityTo, string countryTo,
                    string price,string distance, string duration, string timeZoneDiff,
                    string month, string date, string departureTime, string international, string flightNum); //creating actual map
 
     void getBest(string& filter, string& origin, string& dest);        //returns the best flight based on the filter passed in
-    void print(string& filter, string& flightNum); //prints the graph based off of filter and the best graph
+    void printBoardingPass(string& filter, string& flightNum); //prints the graph based off of filter and the best graph
 };
