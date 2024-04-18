@@ -15,8 +15,10 @@ string WorldInfo::makePrice(int min, int max){
 
 //base min 300 base max 10,000
 string WorldInfo::makeDistance(int min, int max) {
-    int dist = min;
-    dist += (rand() % max);
+    int dist = (rand() % max);
+    if(dist < min){
+        dist += min;
+    }
     return to_string(dist);
 
 }
@@ -27,12 +29,39 @@ string WorldInfo::makeDuration(int min, int max) {
     return to_string(dur);
 }
 
-string WorldInfo::makeTimeZoneDiff(std::string fromTZ, std::string toTZ){
-    float diff = stof(fromTZ) - stof(toTZ);
-    if(diff > 12){
-        diff -= 12;
+string WorldInfo::makeTimeZoneDiff(std::string from, std::string to){
+    int fromidx = cityNamesMap.at(from);
+    string fromTZ = TZdiff[fromidx];
+
+    int toidx = cityNamesMap.at(to);
+    string toTZ = TZdiff[toidx];
+
+    string TZdiff;
+    if(fromTZ[0] == '+' && toTZ[0] == '+'){
+        int ftz = stoi(fromTZ);
+        int ttz = stoi(toTZ);
+        int diff = abs(ftz - ttz);
+        TZdiff = to_string(diff);
+        return TZdiff;
+    }else if(fromTZ[0] == '-' && toTZ[0] == '+'){
+        int ftz = stoi(fromTZ);
+        int ttz = stoi(toTZ);
+        int diff =  (abs(ftz) + ttz) % 15;
+        TZdiff = to_string(diff);
+        return TZdiff;
+    }else if(fromTZ[0] == '+' && toTZ[0] == '-'){
+        int ftz = stoi(fromTZ);
+        int ttz = stoi(toTZ);
+        int diff =  (ftz + abs(ttz)) % 15;
+        TZdiff = to_string(diff);
+        return TZdiff;
+    }else if(fromTZ[0] == '-' && toTZ[0] == '-') {
+        int ftz = stoi(fromTZ);
+        int ttz = stoi(toTZ);
+        int diff = abs(ftz - ttz);
+        TZdiff = to_string(diff);
+        return TZdiff;
     }
-    return to_string(diff);
 }
 
 string WorldInfo::makeMonth() {
@@ -70,13 +99,26 @@ string WorldInfo::isInternational(int idxFrom, int idxTo) {
     if(correspondingCountries[idxFrom] == correspondingCountries[idxTo]){
         return "no";
     }else{
-        return "no";
+        return "yes";
     }
 }
 
+string WorldInfo::makeDate(string month) {
+    string date;
+    int temp;
+    if(month == "feb"){
+        temp = rand() % 28;
+    }else{
+        temp = rand() % 30;
+    }
+    date = to_string(temp);
+    return date;
+}
+
+
 bool WorldInfo::writeLine(string filename, string cityFrom, string countryFrom, string cityTo, string countryTo,
                           string price,string distance, string duration, string timeZoneDiff,
-                          string month, string departureTime, string international){
+                          string month, string date, string departureTime, string international){
 
     ofstream file;
     file.open(filename, ios_base::app);
@@ -98,91 +140,119 @@ bool WorldInfo::writeLine(string filename, string cityFrom, string countryFrom, 
 }
 
 bool WorldInfo::writeFile(string filename){
-    string response, TZF, TZT, cityFrom, cityTo, countryFrom, countryTo, price, distance, dur, TZdiff, month, depTime, international;
+    vector<vector<int>> kindaMat(100,std::vector<int>(100,0));
+    string response, cityFrom, cityTo, countryFrom, countryTo, price, distance, dur, TZdiff, month, depTime, international, date;
     int min, max;
-    for(int i = 0; i < 5000; i++){
+    for(int i = 0; i < 8334; i++){
+        //getting the cities to work with
+        //get random starting city
         int randIdxFrom = rand() % 100;
+
+        //get random ending city
+        int randIdxTo = rand() % 100;
+
+        kindaMat[randIdxFrom][randIdxFrom] = 1;
+        kindaMat[randIdxTo][randIdxTo] = 1;
+        //if they already have a flight between themselves, get a different pair
+        while(kindaMat[randIdxFrom][randIdxTo] == 1){
+            randIdxTo = rand() % 100;
+            randIdxFrom = rand() % 100;
+        }
+
+        //if not flight between them, set to yes there is a flight
+        kindaMat[randIdxFrom][randIdxTo] = 1;
+
         cityFrom = cityNames[randIdxFrom];
         countryFrom = correspondingCountries[randIdxFrom];
-        int randIdxTo = rand() % 100;
-        while(randIdxFrom == randIdxTo){
-            randIdxTo = rand() % 100;
-        }
+
         cityTo = cityNames[randIdxTo];
         countryTo = correspondingCountries[randIdxTo];
+
         international = isInternational(randIdxFrom, randIdxTo);
+        TZdiff = makeTimeZoneDiff(cityFrom, cityTo);
 
-        cout << "City from: " << cityFrom << ", " << countryFrom << endl
-        << "Please enter the TZ difference from Greenwich as +/- the hours" << endl;
-        cin >> TZF;
-        cout << "City to: " << cityTo << ", " << countryTo << endl
-                << "Please enter the TZ difference from Greenwich as +/- the hours" << endl;;
-        cin >> TZT;
+        if(TZdiff == "0"){
+            min = 50;
+        }else{
+            min = 50 + ((stoi(TZdiff) - 1) * 200);
+        }
+        if(international == "no"){
+            max = 400;
+        }else if(stoi(TZdiff) >= 6){
+            max = min + 1000;
+        }else if(stoi(TZdiff) >= 3){
+            max = min + 700;
+        }else{
+            max = min + 300;
+        }
+        price = makePrice(min, max);
 
-        response = "n";
-        min = 50;
-        max = 5000;
-        while(response != "y"){
-            price = makePrice(min, max);
-            cout << "Is a price of: $" << price << " okay? Enter h, l, or y.\n";
-            cin >> response;
-            if(response == "h"){
-                min += 250;
+
+        if(countryFrom == "USA" && countryTo == "USA" && TZdiff == "3"){
+            cout << "within usa, 3h\n";
+            min = 2000;
+            max = 3000;
+        }else if(countryFrom == "USA" && countryTo == "USA" && TZdiff == "2"){
+            cout << "within usa, 2h\n";
+            min = 1000;
+            max = 2000;
+        }else if(countryFrom == "USA" && countryTo == "USA" && (TZdiff == "1" || TZdiff == "1")){
+            cout << "within usa, 1h\n";
+            min = 50;
+            max = 1000;
+        }else if(international == "no" || TZdiff == "0"){
+            if(TZdiff == "0"){
+                cout << "no tz diff\n";
             }else{
-                max = stoi(price) - 250;
+                cout << "same country\n";
             }
+
+            min = 50;
+            max = 500;
+        }else if(stoi(TZdiff) <= 3){
+            cout << "tz diff less than or eq to 3 h\n";
+            min = 100;
+            max = 2000;
+        }else if(stoi(TZdiff) <= 5){
+            cout << "tz diff less than or eq to 5 h\n";
+            min = 2000;
+            max = 6000;
+        }else{
+            cout << "tz diff larger than 5 h\n";
+            min = 6000;
+            max = 9000;
         }
+        distance = makeDistance(min, max);
 
-        response = "n";
-        min = 300;
-        max = 10000;
-        while(response != "y"){
-            distance = makeDistance(min, max);
-            cout << "Is a distance of " << distance << " miles okay? Enter h, l, or y.\n";
-            cin >> response;
-            if(response == "h"){
-                min += 150;
-            }else{
-                max = stoi(distance) - 150;
-            }
+
+        if(TZdiff == "1" || TZdiff == "0"){
+            min = 1;
+            max = 3;
+        }else if(stoi(TZdiff) < 3){
+            min = 2;
+            max = 4;
+        }else if(stoi(TZdiff) < 5){
+            min = 4;
+            max = 6;
+        }else if(stoi(TZdiff) < 7){
+            min = 7;
+            max = 10;
+        }else{
+            min = 11;
+            max = 18;
         }
+        dur = makeDuration(min, max);
+        month = makeMonth();
 
-        response = "n";
-        min = 1;
-        max = 30;
-        while(response != "y"){
-            dur = makeDuration(min, max);
-            cout << "Is a duration of " << dur << " hours okay? Enter h, l, or y.\n";
-            cin >> response;
-            if(response == "h"){
-                min += 2;
-            }else{
-                max = stoi(dur) - 2;
-            }
-        }
+        depTime = makeDepartureTime();
+        date = makeDate(month);
 
-        TZdiff = makeTimeZoneDiff(TZF, TZT);
-
-        response = "n";
-        while(response != "y"){
-            month = makeMonth();
-            cout << "Is the month of " << month << " okay? Enter y or n.\n";
-            cin >> response;
-        }
-
-        response = "n";
-        while(response != "y"){
-            depTime = makeDepartureTime();
-            cout << "Is a departure time of " << depTime << " okay? Enter y or n.\n";
-            cin >> response;
-        }
-
-        cout << "\nOkay. Adding line:\n";
-        cout << cityFrom << "," << countryFrom << "," << cityTo << "," << countryTo << "," << price << distance << "," << dur << "," << TZdiff << month << depTime << international;
-
-        cout << endl << endl;
+        cout << cityFrom << ", " << countryFrom << " to " << cityTo << ", " << countryTo << " for $" << price << ", flying over " <<  distance << " miles , lasting " << dur << " hours, " << TZdiff << " hours apart" <<  endl;
+        bool success = writeLine("proj3DataTEST.csv", cityFrom, countryFrom, cityTo, countryTo, price, distance, dur, TZdiff, month, date, depTime, international);
+        cout << endl;
 
     }
 }
+
 
 
