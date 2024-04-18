@@ -58,18 +58,31 @@ flight* Graph::createFlightHelper(string &cityFrom, string &cityTo, string &pric
 
 string Graph::cheapestDirect(string &origin) {
     string flightNum;
+    int price;
+    int min = 100000000;
+
+    for(int i = 0; i < 100; i++) {      //our grid is 100x100 so we know at most there's 100 iterations to go over whole line
+        string temp = g[origin][i];
+
+        if (!temp.empty()) {
+            price = flightPair[temp]->price;
+
+            if(price < min) {
+                flightNum = temp;
+            }
+        }
+    }
     return flightNum;
 }
 string Graph::directExists(string &origin, string &dest) {
-    if (g[origin][dest] == " ") {       //if there is not a graph number at this specific position then direct graph doesn't exist;
+    if (g[origin][dest].empty) {       //if there is not a graph number at this specific position then direct graph doesn't exist;
         cout << "Direct graph between " << origin << " and " << dest << " does not exist." << endl << endl;
-        return "";
     }
     return g[origin][dest];        //else it exists return true
 }
 
 bool Graph::international(string &flightNum) {
-    return false;
+    return flightPair[flightNum]->intl;
 }
 
 void Graph::getBest(string &filter, string &origin, string &dest) {
@@ -99,14 +112,21 @@ void Graph::print(string &filter, string &flightNum) {
     if (filter.empty()) {       //invalid filter was passed in
         cout << "Error. Invalid Filter." << endl << endl;
     }
-    else if (flightNum.empty()) {
+    else if (flightNum.empty()) {   //this type of flight does not exist
         cout << "Flight does not exist." << endl << endl;
     }
     else {      //flight exists and a valid filter was passed in
-        cout << "Based on " << filter << " graph filter, the best graph for you is:" << endl;
-        cout << "Flight number: " << flightNum << endl;
         // print out all relevant graph info by accessing the graph from map
-        flightPair[flightNum][].price
+        cout << "Based on " << filter << " flight filter, the best flight for you is:" << endl;
+        cout << "Flight number: " << flightNum << endl;
+        cout << "Origin City: " << flightPair[flightNum]->originCity << endl;
+        cout << "Destination City: " << flightPair[flightNum]->destinationCity << endl << endl;
+        cout << "Date: " << flightPair[flightNum]->date << endl;
+        cout << "Departure Time: " << flightPair[flightNum]->time << endl;
+        cout << "Time of Travel: " << flightPair[flightNum]->duration << endl;
+        cout << "Distance of Travel: " << flightPair[flightNum]->distance << endl;
+        cout << "Time Zone Difference: " << flightPair[flightNum]->timeDiff << endl << endl;
+        cout << "The Price for This Flight is: " << flightPair[flightNum]->price << endl << endl;
     }
 }
 
