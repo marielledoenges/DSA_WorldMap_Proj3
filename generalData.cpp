@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include "generalData.h"
+#include <set>
 using namespace std;
 
 
@@ -115,24 +116,42 @@ string WorldInfo::makeDate(string month) {
     return date;
 }
 
+string WorldInfo::makeFlightNum() {
+    int flightNum = rand() % 10000;
+    string toRet = to_string(flightNum);
+
+    if(toRet.length() == 1){
+        toRet = "0000" + toRet;
+    }else if(toRet.length() == 2){
+        toRet = "000" + toRet;
+    }else if(toRet.length() == 3){
+        toRet = "00" + toRet;
+    }else if(toRet.length() == 4){
+        toRet = "0" + toRet;
+    }
+
+    return toRet;
+}
 
 bool WorldInfo::writeLine(string filename, string cityFrom, string countryFrom, string cityTo, string countryTo,
                           string price,string distance, string duration, string timeZoneDiff,
-                          string month, string date, string departureTime, string international){
+                          string month, string date, string departureTime, string international, string flightNum){
 
     ofstream file;
     file.open(filename, ios_base::app);
     file << cityFrom << ","
          << countryFrom << ","
-         << cityTo << ",'"
+         << cityTo << ","
          << countryTo << ","
          << price << ","
          << distance << ","
          << duration << ","
          << timeZoneDiff << ","
          << month << ","
+         << date << ","
          << departureTime << ","
-         << international
+         << international << ","
+         << flightNum << ","
          << endl;
 
     file.close();
@@ -141,9 +160,10 @@ bool WorldInfo::writeLine(string filename, string cityFrom, string countryFrom, 
 
 bool WorldInfo::writeFile(string filename){
     vector<vector<int>> kindaMat(100,std::vector<int>(100,0));
-    string response, cityFrom, cityTo, countryFrom, countryTo, price, distance, dur, TZdiff, month, depTime, international, date;
+    set<int> allFlightNums;
+    string response, cityFrom, cityTo, countryFrom, countryTo, price, distance, dur, TZdiff, month, depTime, international, date, flightNum;
     int min, max;
-    for(int i = 0; i < 8334; i++){
+    for(int i = 0; i < 7200; i++){
         //getting the cities to work with
         //get random starting city
         int randIdxFrom = rand() % 100;
@@ -170,6 +190,12 @@ bool WorldInfo::writeFile(string filename){
 
         international = isInternational(randIdxFrom, randIdxTo);
         TZdiff = makeTimeZoneDiff(cityFrom, cityTo);
+        flightNum = makeFlightNum();
+        int temp = stoi(flightNum);
+        while(allFlightNums.find(temp) != allFlightNums.end()){
+            flightNum = makeFlightNum();
+            temp = stoi(flightNum);
+        }
 
         if(TZdiff == "0"){
             min = 50;
@@ -248,11 +274,13 @@ bool WorldInfo::writeFile(string filename){
         date = makeDate(month);
 
         cout << cityFrom << ", " << countryFrom << " to " << cityTo << ", " << countryTo << " for $" << price << ", flying over " <<  distance << " miles , lasting " << dur << " hours, " << TZdiff << " hours apart" <<  endl;
-        bool success = writeLine("proj3DataTEST.csv", cityFrom, countryFrom, cityTo, countryTo, price, distance, dur, TZdiff, month, date, depTime, international);
+        bool success = writeLine("proj3DataTEST.csv", cityFrom, countryFrom, cityTo, countryTo, price, distance, dur, TZdiff, month, date, depTime, international, flightNum);
         cout << endl;
 
     }
 }
+
+
 
 
 

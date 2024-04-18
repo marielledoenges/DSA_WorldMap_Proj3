@@ -97,7 +97,7 @@ private:
 public:
     bool writeLine(string filename, string cityFrom, string countryFrom, string cityTo, string countryTo,
                    string price,string distance, string duration, string timeZoneDiff,
-                   string month, string date, string departureTime, string international);
+                   string month, string date, string departureTime, string international, string flightNum);
 
     bool writeFile(string filename);
     bool readFile(string filename);
@@ -109,6 +109,7 @@ public:
     string makeDepartureTime();
     string isInternational(int idxFrom, int idxTo);
     string makeDate(string month);
+    string makeFlightNum();
     void print(){
 
     }
