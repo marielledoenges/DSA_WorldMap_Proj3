@@ -21,6 +21,12 @@ void Graph::createMap(string cityFrom, string countryFrom, string cityTo, string
     if (international == "no") {
         intl = false;
     }
+    if (globalCities.count(cityFrom) == 0) {        //inserting into set will make things easier for Djikstra's
+        globalCities.insert(cityFrom);
+    }
+    if (globalCities.count(cityTo) == 0) {
+        globalCities.insert(cityTo);
+    }
 
     this->current = new Flight(cityFrom, countryFrom, cityTo, countryTo, priceNum, distanceNum, dur, tz, month, date, departureTime, intl, flightNum);
 
@@ -96,7 +102,16 @@ bool Graph::international(string &origin, string &dest) {
 }
 
 vector<Flight*> Graph::cheapestPath(string &origin, string &dest) {        //want to use djikstra's or another algorithm to get shortest path
-//returns a vector of flight numbers
+//returns a vector of flights
+set<string> completed;
+set<string> needsProccess = globalCities;   //have all cities to start in this needs processing set
+int d[100];
+Flight* p[100];
+
+fill(begin(p), end(p), nullptr);
+
+
+
 }
 
 void Graph::getBest(string &filter, string &origin, string &dest) {
@@ -109,7 +124,7 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
         thisFlight = directExists(origin, dest);     //if filter is direct, set graph number equal to
     }
     else if (filter == "Cheapest International Flight") {
-        thisFlight = cheapestIntl(origin); 
+        thisFlight = cheapestIntl(origin);
     }
     else if (filter == "International" || filter == "Domestic") {
         bool isIntl = international(origin, dest);
@@ -125,7 +140,7 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
         cout << "What month are you looking at flying? " << endl;
         cin >> temp;
         thisFlight = flightMonth(origin, temp);
-        
+
         if (thisFlight == nullptr) {
             cout << "No direct flight from " << origin << " in " << temp << " was found." << endl;
         }
@@ -133,9 +148,9 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
     else {
         filter = "";
     }
-    
+
     printBoardingPass(filter, thisFlight);
-    
+
     delete thisFlight;
 }
 
