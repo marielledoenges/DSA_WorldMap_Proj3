@@ -1,9 +1,17 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 #include "Flight.h"
-using namespace std;
 
-struct Screen {
-    sf::RenderWindow createWindow(int width, int height, string title);
-    void displayWindow(sf::RenderWindow& window);
-    void drawBoardingPass(sf::RenderWindow& window, Flight& flight); // Method to draw a boarding pass
+struct FrontEnd {
+    sf::RenderWindow window;
+    sf::Font font;
+    sf::Color backgroundColor;
+    sf::Color textColor;
+    sf::Color outlineColor;
+
+    FrontEnd(int width, int height, const std::string& title);
+    void run();
+    void loadFont(const std::string& fontPath);
+    void drawBoardingPass(const Flight& flight);
+    void handleUserInput(std::vector<Flight>& availableFlights, Flight& selectedFlight);
 };
