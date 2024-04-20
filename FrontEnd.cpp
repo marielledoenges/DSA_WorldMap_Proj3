@@ -2,71 +2,69 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-// Constructor
-FrontEnd::FrontEnd(int width, int height, const std::string& title) {
+FrontEnd::FrontEnd(int width, int height, const std::string& title) :
+        backgroundColor(sf::Color::White), textColor(sf::Color::Black), outlineColor(sf::Color::Black) {
     window.create(sf::VideoMode(width, height), title, sf::Style::Close);
-    backgroundColor = sf::Color::White;
-    textColor = sf::Color::Black;
-    outlineColor = sf::Color::Blue;
-    loadFont("fonts/Roboto-Regular.ttf"); // Make sure to provide a valid path
 }
 
-
-
-// Load font
 void FrontEnd::loadFont(const std::string& fontPath) {
     if (!font.loadFromFile(fontPath)) {
-        std::cerr << "Failed to load font at: " << fontPath << std::endl;
+        std::cerr << "Could not load font at: " << fontPath << std::endl;
         exit(EXIT_FAILURE);
     }
 }
 
-
-
-// Draw Boarding Pass
 void FrontEnd::drawBoardingPass(const Flight& flight) {
+    // Clear previous content
     window.clear(backgroundColor);
 
-    sf::RectangleShape passBackground(sf::Vector2f(500, 250));
-    passBackground.setPosition(50, 50);
-    passBackground.setFillColor(sf::Color(255, 250, 250)); // Light off-white
-    passBackground.setOutlineThickness(5);
+    // Draw the boarding pass background
+    sf::RectangleShape passBackground(sf::Vector2f(600, 300));
+    passBackground.setPosition(100, 150);
+    passBackground.setFillColor(sf::Color(230, 230, 250)); // Light shade for the boarding pass
+    passBackground.setOutlineThickness(2);
     passBackground.setOutlineColor(outlineColor);
     window.draw(passBackground);
 
+    // Set up text elements on the boarding pass
     sf::Text text;
     text.setFont(font);
-    text.setCharacterSize(24);
+    text.setCharacterSize(20);
     text.setFillColor(textColor);
 
-    text.setString("Flight No: " + flight.flightNumber);
-    text.setPosition(60, 60);
+    // Display flight number
+    text.setString("Flight Number: " + flight.flightNumber);
+    text.setPosition(120, 160);
     window.draw(text);
 
+    // Display origin and destination
     text.setString("From: " + flight.originCity + " To: " + flight.destinationCity);
-    text.setPosition(60, 100);
+    text.setPosition(120, 200);
     window.draw(text);
 
-    text.setString("Departure: " + flight.date + " at " + flight.time);
-    text.setPosition(60, 140);
+    // Display departure time
+    text.setString("Departure: " + flight.time);
+    text.setPosition(120, 240);
     window.draw(text);
 
-    text.setString("Duration: " + std::to_string(flight.duration) + " hours");
-    text.setPosition(60, 180);
+    // Display distance and duration
+    text.setString("Distance: " + std::to_string(flight.distance) + " miles, Duration: " + std::to_string(flight.duration) + " hours");
+    text.setPosition(120, 280);
     window.draw(text);
 
+    // Display price
     text.setString("Price: $" + std::to_string(flight.price));
-    text.setPosition(60, 220);
+    text.setPosition(120, 320);
     window.draw(text);
-
+    // Display the window content
     window.display();
 }
 
 
-
-// Run Event Loop
 void FrontEnd::run() {
-    std::vector<Flight> availableFlights; // Populate this from external sources
+    std::vector<Flight> availableFlights = {
+            // Flight fetching logic
+    };
 
     while(window.isOpen()) {
         sf::Event event;
@@ -76,29 +74,23 @@ void FrontEnd::run() {
             }
         }
 
-        // Assume a function to fetch or update available flights here
-        if (!availableFlights.empty()) {
-            Flight selectedFlight;
-            handleUserInput(availableFlights, selectedFlight);
-            drawBoardingPass(selectedFlight);
-        }
+        Flight selectedFlight;
+        handleUserInput(availableFlights, selectedFlight); // Allow the user to select a flight
+        drawBoardingPass(selectedFlight); // Draw the selected flight's boarding pass
     }
 }
 
 
-
-// Handle User Input
 void FrontEnd::handleUserInput(std::vector<Flight>& availableFlights, Flight& selectedFlight) {
-    std::cout << "Available flights (Enter index to select):" << std::endl;
-    for (size_t i = 0; i < availableFlights.size(); i++) {
-        std::cout << i + 1 << ": " << availableFlights[i].originCity << " to "
-                  << availableFlights[i].destinationCity << " on "
-                  << availableFlights[i].date << " at " << availableFlights[i].time << std::endl;
+    int index = 0;
+    std::cout << "Available Flights:" << std::endl;
+    for (size_t i = 0; i < availableFlights.size(); ++i) {
+        std::cout << i + 1 << ": From " << availableFlights[i].originCity
+                  << " to " << availableFlights[i].destinationCity << std::endl;
     }
-
-    int choice;
-    std::cin >> choice;
-    if (choice > 0 && choice <= availableFlights.size()) {
-        selectedFlight = availableFlights[choice - 1];
+    std::cout << "Enter the number of the flight you want to select: ";
+    std::cin >> index;
+    if (index > 0 && index <= availableFlights.size()) {
+        selectedFlight = availableFlights[index - 1];
     }
 }
