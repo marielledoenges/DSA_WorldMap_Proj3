@@ -11,7 +11,7 @@ struct MapScreen{
     sf::Texture zoomInT, zoomOutT, pinT;
     sf::Texture upT, dT, RT, LT;
 
-    sf::Sprite map, zoomIn, zoomOut, pin, up, down, left, right;
+    sf::Sprite map, zoomIn, zoomOut, pin, pin2, up, down, left, right;
 
     sf::View mapView, buttonView;
 
@@ -41,9 +41,8 @@ struct MapScreen{
     MapScreen();
     void displayWindow();
     string getCityFromClick(sf::RenderWindow& window, int x, int y);
-    int adjustClick(bool isX, int localPos, int zoom, int up, int left);
     void loadPins();
-    void writeCityLocations(sf::Vector2i mouseClick);
+    void writeCityLocations(int x, int y);
 };
 
 struct Ticket{

@@ -1,20 +1,48 @@
 #include <iostream>
 #include "FrontEnd.h"
 #include <SFML/Graphics.hpp>
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 
-//sf::RenderWindow MapScreen::createWindow(int width, int height, string title) {
-//
-//    sf::RenderWindow temp(sf::VideoMode(width,height), title, sf::Style::Close);
-//
-//
-//}
 
 void MapScreen::loadPins() {
+    ifstream file;
+    file.open("cityCoordinates.csv");
     pinT.loadFromFile("images/red_pin.png");
-    pin.setTexture(pinT);
-    pin.setPosition(1000,350);
+
+    sf::Sprite temp;
+    temp.setTexture(pinT);
+    temp.setOrigin(pinT.getSize().x/2, pinT.getSize().y);
+    int x, y;
+    string loc;
+    for(int i = 0; i < 10; i++){
+        getline(file,loc);
+        x = stoi(loc);
+        getline(file,loc);
+        y = stoi(loc);
+        temp.setPosition(x,y);
+        cityPts.push_back(temp);
+    }
+
+}
+
+string MapScreen::getCityFromClick(sf::RenderWindow& window, int x, int y) {
+    for(int i = 0; i < cityPts.size(); i++){
+        sf::Sprite temp = cityPts[i];
+        if(cityPts[i].getGlobalBounds().contains(x, y)){
+            return cityNames[i] + "\n";
+        }
+    }
+
+    return "NA\n";
+}
+
+void MapScreen::writeCityLocations(int x, int y ) {
+    ofstream file;
+    file.open("cityCoordinates.csv", ios_base::app);
+    file << x << endl << y << endl;
 }
 
 MapScreen::MapScreen() {
@@ -57,7 +85,7 @@ MapScreen::MapScreen() {
 //        temp.setPosition()
 //    }
     cityPts.push_back(pin);
-    cityPts.push_back(right);
+    cityPts.push_back(pin2);
 }
 
 void MapScreen::displayWindow() {
@@ -113,15 +141,11 @@ void MapScreen::displayWindow() {
 
                 else{
 
-
-                    cout << "Screen click: " << clickX << ", " << clickY << endl;
-                    int totalClickX = adjustClick(true, clickX, zIn, shiftU, shiftL);
-                    int totalClickY = adjustClick(false, clickY, zIn, shiftU, shiftL);
-                    cout << "Would be click: " << totalClickX << ", " << totalClickY << endl;
-
+                    int totalClickX = window.mapPixelToCoords(mouse, mapView).x;
+                    int totalClickY =  window.mapPixelToCoords(mouse, mapView).y;
                     string chosenCity = getCityFromClick(window, totalClickX, totalClickY);
                     cout << chosenCity;
-                    //writeCityLocations(mouse);
+                    writeCityLocations(totalClickX, totalClickY);
                 }
                 //cout << mapView.getCenter().x << " " << mapView.getCenter().y << endl;
             }
@@ -130,7 +154,9 @@ void MapScreen::displayWindow() {
 
         window.setView(mapView);
         window.draw(map); // Draw the map
-        window.draw(pin);
+        for(auto pin : cityPts){
+            window.draw(pin);
+        }
 
         window.setView(window.getDefaultView()); // Switch to the default view (screen coordinates)
         window.draw(zoomIn);
@@ -144,44 +170,6 @@ void MapScreen::displayWindow() {
         window.display();
 
     }
-}
-
-string MapScreen::getCityFromClick(sf::RenderWindow& window, int x, int y) {
-    for(int i = 0; i < 2; i++){
-        sf::Sprite temp = cityPts[i];
-        //cout << temp.getPosition().x << " " << temp.getPosition().y << endl;
-        if(cityPts[i].getGlobalBounds().contains(x, y)){
-            return cityNames[i] + "\n";
-        }
-    }
-
-    return "NA\n";
-}
-
-void MapScreen::writeCityLocations(sf::Vector2i mouseClick) {
-    ofstream file;
-    file.open("cityCoordinates.csv", ios_base::app);
-    file << mouseClick.x << endl << mouseClick.y << endl;
-}
-
-int MapScreen::adjustClick(bool isX, int localPos, int zoom, int up, int left) {
-    int final;
-    if(isX){
-        if(localPos < 747){
-            final = localPos + (25 * zoom);
-        }else{
-            final = localPos + (25 * zoom);
-        }
-    }
-    else{
-        if(localPos < 350){
-            final = localPos + (11.71 * zoom);
-        }else{
-            final = localPos - (11.71 * zoom);
-        }
-    }
-
-    return final;
 }
 
 
