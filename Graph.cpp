@@ -1,12 +1,9 @@
 #include <iostream>
-#include "graph.h"
+#include "Graph.h"
 #include <string>
 #include <map>
 #include <set>
 
-int Graph::n(string city) {
-    return cityNamesMap[city];
-}
 
 void Graph::createMap(string cityFrom, string countryFrom, string cityTo, string countryTo,
                       string price,string distance, string duration, string timeZoneDiff,
@@ -83,7 +80,7 @@ Flight* Graph::flightMonth(string &origin, string &month) {
     int min = 100000000;
 
     for(int i = 0; i < 100; i++) {      //our grid is 100x100 so we know at most there's 100 iterations to go over whole line
-         Flight* temp = g[n(origin)][i];
+        Flight* temp = g[n(origin)][i];
 
         if (temp != nullptr) {
             price = temp->price;
@@ -103,12 +100,12 @@ bool Graph::international(string &origin, string &dest) {
 
 vector<Flight*> Graph::cheapestPath(string &origin, string &dest) {        //want to use djikstra's or another algorithm to get shortest path
 //returns a vector of flights
-set<string> completed;
-set<string> needsProccess = globalCities;   //have all cities to start in this needs processing set
-int d[100];
-Flight* p[100];
+    set<string> completed;
+    set<string> needsProccess = globalCities;   //have all cities to start in this needs processing set
+    int d[100];
+    Flight* p[100];
 
-fill(begin(p), end(p), nullptr);
+    fill(begin(p), end(p), nullptr);
 
 
 
@@ -154,35 +151,6 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
     delete thisFlight;
 }
 
-void Graph::readCSVFile(string filename){
-    ifstream file;
-    file.open(filename);
-
-    string line, cityFrom, cityTo, countryFrom, countryTo, month, depTime, date, flightNum, temp;
-    int price, distance, duration, timeDiff;
-    bool intl;
-    while(getline(file, line)){
-        stringstream ss(line);
-        getline(ss, cityFrom,',');
-        getline(ss, countryFrom,',');
-        getline(ss, cityTo,',');
-        getline(ss, countryTo,',');
-        getline(ss, temp,',');
-        price = stoi(temp);
-        getline(ss, temp,',');
-        distance = stoi(temp);
-        getline(ss, temp,',');
-
-        getline(ss, cityFrom,',');
-        getline(ss, cityFrom,',');
-        getline(ss, cityFrom,',');
-        getline(ss, cityFrom,',');
-        getline(ss, cityFrom,',');
-        getline(ss, cityFrom,',');
-        getline(ss, cityFrom);
-    }
-}
-
 void Graph::printBoardingPass(string &filter, Flight* thisFlight) {
     if (filter.empty() || thisFlight == nullptr) {       //either invalid filter, or no boarding pass to print because they just wanted info
         cout << "Error. No Boarding Pass to Print." << endl << endl;
@@ -202,3 +170,36 @@ void Graph::printBoardingPass(string &filter, Flight* thisFlight) {
         cout << "The Price for This Flight is: " << thisFlight->price << endl << endl;
     }
 }
+
+void Graph::readCSVFile(string filename){
+    ifstream file;
+    file.open(filename);
+
+    string line, cityFrom, cityTo, countryFrom, countryTo, month, depTime, date, flightNum, temp , price, distance, duration, timeDiff, intl;
+
+    while(getline(file, line)){
+        //fill out all the variables to create a flight object
+        stringstream ss(line);
+        getline(ss, cityFrom,',');
+        getline(ss, countryFrom,',');
+        getline(ss, cityTo,',');
+        getline(ss, countryTo,',');
+        getline(ss, price,',');
+        getline(ss, distance,',');
+        getline(ss, duration,',');
+        getline(ss, timeDiff,',');
+        getline(ss, month,',');
+        getline(ss, date,',');
+        getline(ss, depTime,',');
+        getline(ss, intl,',');
+        getline(ss, flightNum);
+
+        //create a flight object with these details
+        createMap(cityFrom, countryFrom, cityTo, countryFrom, price, distance, duration, timeDiff, month, date, depTime, intl, flightNum);
+    }
+}
+
+int Graph::n(string city) {
+    return cityNamesMap[city];
+}
+
