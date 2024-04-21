@@ -11,37 +11,64 @@ using namespace std;
 //
 //}
 
+void MapScreen::loadPins() {
+    pinT.loadFromFile("images/red_pin.png");
+    pin.setTexture(pinT);
+    pin.setPosition(1000,350);
+}
+
 MapScreen::MapScreen() {
     map.setTexture(mapTexture);
     map.setOrigin(0,0);
 
     zoomInT.loadFromFile("images/zoom_in.jpg");
     zoomOutT.loadFromFile("images/zoom_out.jpg");
-    pinT.loadFromFile("images/red_pin.png");
+
+    upT.loadFromFile("images/up.png");
+    dT.loadFromFile("images/down.png");
+    RT.loadFromFile("images/right.png");
+    LT.loadFromFile("images/left.png");
 
     zoomIn.setTexture(zoomInT);
-    zoomIn.setPosition(40, 500);
+    zoomIn.setPosition(40, 300);
 
     zoomOut.setTexture(zoomOutT);
-    zoomOut.setPosition(40, 560);
+    zoomOut.setPosition(40, 360);
 
-    pin.setTexture(pinT);
-    pin.setPosition(500,300);
-
+    loadPins();
 
 
-    //view.setCenter(0,0);
-    //view.setSize(1494, 700);
-    //map.setScale(0.7,0.7);
+    up.setTexture(upT);
+    up.setPosition(60, 550);
+    down.setTexture(dT);
+    down.setPosition(60, 620);
+    right.setTexture(RT);
+    right.setPosition(95, 585);
+    left.setTexture(LT);
+    left.setPosition(25, 585);
 
+    ifstream file;
+    file.open("cityCoordinates.csv");
+    file.close();
+//
+//    for(int i = 0; i < 20; i++){
+//        sf::Sprite temp;
+//        temp.setTexture(pinT);
+//        temp.setPosition()
+//    }
+    cityPts.push_back(pin);
+    cityPts.push_back(right);
 }
 
 void MapScreen::displayWindow() {
     sf::RenderWindow window(sf::VideoMode(1494,700), "testing", sf::Style::Close);
 
-    view.setCenter(window.getSize().x/2,window.getSize().y/2);
-    view.setSize(window.getSize().x/3, window.getSize().y/3);
+    mapView.setCenter(window.getSize().x/2,window.getSize().y/2);
+    mapView.setSize(window.getSize().x, window.getSize().y);
 
+    buttonView.setCenter(window.getSize().x/2,window.getSize().y/2);
+    buttonView.setSize(window.getSize().x, window.getSize().y);
+    int shiftL = 0, shiftR = 0, shiftU = 0, shiftD = 0, zIn = 0, zOut = 0;
 
     while(window.isOpen()) {
         sf::Event event;
@@ -54,40 +81,108 @@ void MapScreen::displayWindow() {
                 mouse = sf::Mouse::getPosition(window);
                 int clickX = mouse.x;
                 int clickY = mouse.y;
-                //cout << clickX << " " << clickY << endl;
-               // map.scale(0.9, 0.9);
-                //map.setPosition(map.getPosition().x+10, map.getPosition().y-100);
-
                 if(zoomIn.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
-                    if(map.getScale().x < 2.6) {
-                        map.setScale(map.getScale().x + 0.2, map.getScale().y + 0.2);
-                        cout << map.getScale().x << " " << map.getScale().y << endl;
-                        map.setOrigin(mapTexture.getSize().x / 2, mapTexture.getSize().y / 2);
-                        map.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+                    if(mapView.getSize().x > 395){
+                        mapView.setSize(mapView.getSize().x - 100, mapView.getSize().y - 46.85);
+                        zIn += 1;
+                        zOut -= 1;
                     }
-
                 }else if(zoomOut.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
-                    if(map.getScale().x > 1) {
-                        map.setScale(map.getScale().x - 0.2, map.getScale().y - 0.2);
-                        cout << map.getScale().x << " " << map.getScale().y << endl;
-                        map.setOrigin(mapTexture.getSize().x / 2, mapTexture.getSize().y / 2);
-                        map.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+                    if(mapView.getSize().x >= 394 && mapView.getSize().x < 1494){
+                        mapView.setSize(mapView.getSize().x + 100, mapView.getSize().y + 46.85);
+                        zIn -= 1;
+                        zOut += 1;
                     }
-                }else{
-                    cout << clickX << ", " << clickY << endl;
+                }else if(up.getGlobalBounds().contains(window.mapPixelToCoords(mouse)) && shiftU < zIn) {
+                    mapView.move(0,-23.43);
+                    shiftU += 1;
+                    shiftD -= 1;
+                }else if(down.getGlobalBounds().contains(window.mapPixelToCoords(mouse)) && shiftD < zIn) {
+                    mapView.move(0,23.43);
+                    shiftD += 1;
+                    shiftU -= 1;
+                }else if(left.getGlobalBounds().contains(window.mapPixelToCoords(mouse)) && shiftL < zIn) {
+                    mapView.move(-50,0);
+                    shiftL += 1;
+                    shiftR -= 1;
+                }else if(right.getGlobalBounds().contains(window.mapPixelToCoords(mouse)) && shiftR < zIn) {
+                    mapView.move(50,0);
+                    shiftL -= 1;
+                    shiftR += 1;
                 }
+
+                else{
+
+
+                    cout << "Screen click: " << clickX << ", " << clickY << endl;
+                    int totalClickX = adjustClick(true, clickX, zIn, shiftU, shiftL);
+                    int totalClickY = adjustClick(false, clickY, zIn, shiftU, shiftL);
+                    cout << "Would be click: " << totalClickX << ", " << totalClickY << endl;
+
+                    string chosenCity = getCityFromClick(window, totalClickX, totalClickY);
+                    cout << chosenCity;
+                    //writeCityLocations(mouse);
+                }
+                //cout << mapView.getCenter().x << " " << mapView.getCenter().y << endl;
             }
         }
         window.clear(sf::Color::Red);
-        window.draw(map);
+
+        window.setView(mapView);
+        window.draw(map); // Draw the map
+        window.draw(pin);
+
+        window.setView(window.getDefaultView()); // Switch to the default view (screen coordinates)
         window.draw(zoomIn);
         window.draw(zoomOut);
-        window.draw(pin);
-        window.setView(view);
+        window.draw(up);
+        window.draw(down);
+        window.draw(left);
+        window.draw(right);
+
+
         window.display();
+
     }
 }
 
+string MapScreen::getCityFromClick(sf::RenderWindow& window, int x, int y) {
+    for(int i = 0; i < 2; i++){
+        sf::Sprite temp = cityPts[i];
+        //cout << temp.getPosition().x << " " << temp.getPosition().y << endl;
+        if(cityPts[i].getGlobalBounds().contains(x, y)){
+            return cityNames[i] + "\n";
+        }
+    }
+
+    return "NA\n";
+}
+
+void MapScreen::writeCityLocations(sf::Vector2i mouseClick) {
+    ofstream file;
+    file.open("cityCoordinates.csv", ios_base::app);
+    file << mouseClick.x << endl << mouseClick.y << endl;
+}
+
+int MapScreen::adjustClick(bool isX, int localPos, int zoom, int up, int left) {
+    int final;
+    if(isX){
+        if(localPos < 747){
+            final = localPos + (25 * zoom);
+        }else{
+            final = localPos + (25 * zoom);
+        }
+    }
+    else{
+        if(localPos < 350){
+            final = localPos + (11.71 * zoom);
+        }else{
+            final = localPos - (11.71 * zoom);
+        }
+    }
+
+    return final;
+}
 
 
 Ticket::Ticket(int width, int height, const std::string& title) :
@@ -148,7 +243,6 @@ void Ticket::drawBoardingPass(const Flight& flight) {
     window.display();
 }
 
-
 void Ticket::run() {
     std::vector<Flight> availableFlights = {
             // Flight fetching logic
@@ -167,7 +261,6 @@ void Ticket::run() {
         drawBoardingPass(selectedFlight); // Draw the selected flight's boarding pass
     }
 }
-
 
 void Ticket::handleUserInput(std::vector<Flight>& availableFlights, Flight& selectedFlight) {
     int index = 0;
