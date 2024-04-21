@@ -178,23 +178,31 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
         cout << "What's your budget? " << endl;
         cin >> temp;
         vector<string> destinations = minCity(origin, temp);
-
+        
         if (destinations.size() == 1) {
             cout << "You cannot travel to any destination from " << origin << " with this budget. " << endl;
+        }
+        
+        else {
+            cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to is: " << endl;
+            for (int i = 1; i < destinations.size(); i++) {
+                cout << "\tab" << i << ". " << destinations.at(i) << endl;
+            }
         }
     }
     else {
         filter = "";
     }
-
+    
+    cout << endl;
     printBoardingPass(filter, thisFlight);
-
+    
     delete thisFlight;
 }
 
 void Graph::printBoardingPass(string &filter, Flight* thisFlight) {
     if (filter.empty() || thisFlight == nullptr) {       //either invalid filter, or no boarding pass to print because they just wanted info
-        cout << "Error. No Boarding Pass to Print." << endl << endl;
+        cout << "No Boarding Pass to Print." << endl << endl;
     }
     else {      //flight exists and a valid filter was passed in
         // print out all relevant graph info by accessing the graph from map
