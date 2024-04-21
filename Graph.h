@@ -2,24 +2,13 @@
 #include <string>
 #include <map>
 #include <vector>
-#include <set>
+#include <unordered_set>
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
 #include <SFML/Graphics.hpp>
+
 using namespace std;
-
-struct City{
-    pair<int,int> pinLocation;
-    string name, country;
-
-    City(string name, string country, int x, int y){
-        this->name = name;
-        this->country = country;
-        this->pinLocation.first = x;
-        this->pinLocation.second = y;
-    }
-};
 
 // Represents an individual graph, holding all relevant details and providing methods for accessing these details.
 struct Flight {
@@ -73,30 +62,18 @@ private:
                                                {"Abuja", 90}, {"Nairobi", 91}, {"Zanzibar", 92}, {"Cape Town", 93}, {"Prague",94},
                                                {"San Fransisco", 95}, {"Honolulu", 96}, {"Santorini", 97}, {"Madeira", 98}, {"Oporto", 99}};
 
-    set<string> globalCities;     //keeps track of what cities have already been added
+    unordered_set<string> globalCities;     //keeps track of what cities have already been added
     map<string, Flight*> flightPair;        //maps a specific flight number with a specific flight
-    Flight* g[100][100];     //graph representation of matrix FIXME initialize all matrix entries with " " our graph map will store graph numbers
-
-
-    Flight* createFlightHelper(string &cityFrom, string &cityTo, string &price,string &distance, string &duration, string &timeZoneDiff,
-                               string &month, string &date, string &departureTime, string &international, string &flightNum);    //create map helper
+    Flight* g[100][100];     //graph representation of matrix
 
     Flight* cheapestDirect(string &origin);     //given a starting city, returns cheapest direct flight number
     Flight* directExists(string &origin, string &dest);        //returns flightNum if a direct graph exists between two cities
     Flight* flightMonth(string &origin, string  &month);        //returns the flight number of cheapest flight in a given month, returns empty if no flight exists
-    vector<Flight*> cheapestPath(string &origin, string &dest);        //cheapest way to get between two places if possible, returns a vector of flight numbers. should be generalized
+    vector<string> minCity(string &origin, int &budget);        //cheapest way to get between two places if possible, returns a vector of flight numbers. should be generalized
     bool international(string &origin, string &dest);    //returns if the graph is international or not
 
 public:
     Flight* current;
-
-    // Getter methods to expose private properties in a controlled manner.
-    /*string getOriginCity() const;
-    string getDestinationCity() const;
-    int getPrice() const;
-    int getDuration() const;
-    int getStops() const;
-    string getTimeOfDay() const; */
 
     Graph(){
         for(int i = 0; i < 100; i++){
