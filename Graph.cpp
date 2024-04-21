@@ -1,4 +1,12 @@
-#include <iostream>#include "Graph.h"#include <string>#include <map>#include <unordered_set>#include <queue>void Graph::createMap(string cityFrom, string countryFrom, string cityTo, string countryTo,
+#include <iostream>
+#include "Graph.h"
+#include <string>
+#include <map>
+#include <unordered_set>
+#include <queue>
+
+
+void Graph::createMap(string cityFrom, string countryFrom, string cityTo, string countryTo,
                       string price,string distance, string duration, string timeZoneDiff,
                       string month, string date, string departureTime, string international, string flightNum){
 
@@ -11,110 +19,140 @@
     if (international == "no") {
         intl = false;
     }
-    if (globalCities.count(cityFrom) == 0) {        //inserting into set will make things easier for Djikstra's        globalCities.insert(cityFrom);
-    }
-    if (globalCities.count(cityTo) == 0) {
-        globalCities.insert(cityTo);
-    }
 
+    //create new flight
     this->current = new Flight(cityFrom, countryFrom, cityTo, countryTo, priceNum, distanceNum, dur, tz, month, date, departureTime, intl, flightNum);
 
-    g[n(cityFrom)][n(cityTo)] = current;    //inserting flight into matrix}
+    g[n(cityFrom)][n(cityTo)] = current;    //inserting flight into matrix
+}
 
 Flight* Graph::cheapestDirect(string &origin) {
-    Flight *cheapestPair;
+    Flight *cheapestPair = nullptr;     //initialize pointer to be null
     int price;
     int min = 100000000;
 
-    for (int i = 0; i < 100; i++) {      //our grid is 100x100, we know at most there's 100 iterations to go over whole line        if (g[n(origin)][i] != nullptr) {
-            price = g[n(origin)][i]->price;
-            if (price < min) {
-                min = price;
-                cheapestPair = g[n(origin)][i];
+    for (int i = 0; i < 100; i++) {      //our grid is 100x100, we know at most there's 100 iterations to go over whole line
+        if (g[n(origin)][i] != nullptr) {       //if a flight exists
+            price = g[n(origin)][i]->price;     //get current price
+            if (price < min) {      //if it's less than our current minimum price
+                min = price;        //update our min price
+                cheapestPair = g[n(origin)][i];     //set our cheapest pair to this flight
             }
         }
-        return cheapestPair;
+        return cheapestPair;        //return the cheapest direct flight
     }
 }
 
 Flight* Graph::cheapestIntl(string &origin) {
-    Flight* final = nullptr;
+    Flight* final = nullptr;        //initialize to nullptr
     int price;
     int min = 100000000;
 
-    for(int i = 0; i < 100; i++) {      //our grid is 100x100 so we know at most there's 100 iterations to go over whole line        Flight* temp = g[n(origin)][i];
+    for(int i = 0; i < 100; i++) {      //our grid is 100x100 so we know at most there's 100 iterations to go over whole line
+        Flight* temp = g[n(origin)][i];     //set a current pointer to this specific flight in the matrix
 
         if (temp != nullptr) {
             price = temp->price;
 
-            if(price < min && temp->intl) {
-                final = temp;
+            if(price < min && temp->intl) {     //if it's less than our current minimum price and is an international flight
+                final = temp;       //set our final flight equal to our temp pointer
             }
         }
-        delete temp;
+        delete temp;        //delete the temp pointer
     }
     return final;
 }
 
 Flight* Graph::directExists(string &origin, string &dest) {
-    if (g[n(origin)][n(dest)] == nullptr) {       //if there is not a graph number at this specific position then direct graph doesn't exist;        cout << "Direct flight between " << origin << " and " << dest << " does not exist." << endl << endl;
+    if (g[n(origin)][n(dest)] == nullptr) {       //if there is not a graph number at this specific position then direct graph doesn't exist;
+        cout << "Direct flight between " << origin << " and " << dest << " does not exist." << endl << endl;
     }
-    return g[n(origin)][n(dest)]; //return the flight}
+    return g[n(origin)][n(dest)]; //return the flight
+}
 
 Flight* Graph::flightMonth(string &origin, string &month) {
     Flight* final = nullptr;
     int price;
     int min = 100000000;
 
-    for(int i = 0; i < 100; i++) {      //our grid is 100x100 so we know at most there's 100 iterations to go over whole line        Flight* temp = g[n(origin)][i];
+    for(int i = 0; i < 100; i++) {      //our grid is 100x100 so we know at most there's 100 iterations to go over whole line
+        Flight* temp = g[n(origin)][i];
 
         if (temp != nullptr) {
             price = temp->price;
 
-            if(price < min && temp->month == month) {
+            if(price < min && temp->month == month) {   //if it's less than our current minimum price and the month we want
                 final = temp;
             }
         }
-        delete temp;
+        delete temp;        //handling memory by deleting this temporary pointer
     }
-    return final;
+    return final;       //return our final pointer
 }
 
 bool Graph::international(string &origin, string &dest) {
     return g[n(origin)][n(dest)]->intl;
 }
 
-vector<string> Graph::cheapestPath(string &origin, string &dest, Flight* [100][100]) {        //want to use djikstra's or another algorithm to get shortest path//returns a vector of flights    priority_queue<int> pq;
-    unordered_set<string> completed;
-    unordered_set<string> needsProccess = globalCities;   //have all cities to start in this needs processing set    int d[100];
-    pair <string, int> p[100];
-    fill(begin(p), end(p), nullptr);
+vector<string> Graph::minCity(string &origin, int &budget) {        //use a bfs to get the minimum number of cities we can visit with our budget
+//returns a vector of flights
+    queue<pair<string,int>> q;      //have a queue with cities and prices to visit that city
+    unordered_set<string> visited;        //have an unordered set that keeps track of all the visited cities
+    vector<string> final;           //final vector of cities we will return
+    int totalPrice = 0;         //the total price spent so far
 
-    Flight* temp = cheapestDirect(origin);
+    visited.insert(origin);     //mark the origin as visited
+    q.emplace(origin, 0);       //place back the origin with a price of zero
+    final.push_back(origin);
 
-    needsProccess.erase(origin);
-    pq.emplace(origin, 0);
+    while (!q.empty()) {
+        pair<string, int> currCity = q.front();     //our current city is going to be the one at the front of the queue
 
-    for (auto itr: needsProccess) {
-        pq.emplace(itr, INT_MAX);
+        if (currCity.second + totalPrice > budget) {     //if the current price to travel to this city is greater than our max
+            return final;       //we know we hit minimum number of cities to visit with that price and we return the current final vector
+        }
+
+        totalPrice += currCity.second;      //else we have room in budget so we add the price to travel to this city
+        final.push_back(currCity.first);    //push back this city into the vector
+        q.pop();    //pop the front
+
+        for (int i = 0; i < 100; i++){      //we know our matrix is 100x100
+            Flight* thisFlight = g[n(currCity.first)][i];       //set a temp flight pointer to this specific flight in our graph
+
+            if(thisFlight!= nullptr && visited.count(thisFlight->destinationCity) == 0) {       //if our set doesn't have the destination city and this flight exists
+                visited.insert(thisFlight->destinationCity);        //add it to our visited set
+                q.emplace(thisFlight->destinationCity, thisFlight->price);      //push it into our queue
+            }
+
+            delete thisFlight;      //handling memory, so delete this temporary pointer
+        }
     }
-
-    while (!needsProccess.empty()) {
-        p = pq.top();
-    }
-
-
+    return final;       //if we make it all the way here we could visit all cities with our budget
 }
 
 void Graph::getBest(string &filter, string &origin, string &dest) {
     Flight* thisFlight = nullptr;
 
     if (filter == "Cheapest Direct Flight") {
-        thisFlight = cheapestDirect(origin);     //if the filter is cheap then we call cheapest graph helper function    }
+        thisFlight = cheapestDirect(origin);     //if the filter is cheap then we call cheapest graph helper function
+
+        if (thisFlight == nullptr) {
+            cout << "No direct flight from " << origin << " was found." << endl;
+        }
+    }
     else if (filter == "Direct") {
-        thisFlight = directExists(origin, dest);     //if filter is direct, set graph number equal to    }
+        thisFlight = directExists(origin, dest);     //if filter is direct, set graph number equal to
+
+        if (thisFlight == nullptr) {
+            cout << "No direct flight from " << origin << " to " << dest << " was found." << endl;
+        }
+    }
     else if (filter == "Cheapest International Flight") {
         thisFlight = cheapestIntl(origin);
+
+        if (thisFlight == nullptr) {
+            cout << "No international flight from " << origin << " was found." << endl;
+        }
     }
     else if (filter == "International" || filter == "Domestic") {
         bool isIntl = international(origin, dest);
@@ -135,6 +173,16 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
             cout << "No direct flight from " << origin << " in " << temp << " was found." << endl;
         }
     }
+    else if (filter == "Minimum Num Cities") {
+        int temp;
+        cout << "What's your budget? " << endl;
+        cin >> temp;
+        vector<string> destinations = minCity(origin, temp);
+
+        if (destinations.size() == 1) {
+            cout << "You cannot travel to any destination from " << origin << " with this budget. " << endl;
+        }
+    }
     else {
         filter = "";
     }
@@ -145,9 +193,13 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
 }
 
 void Graph::printBoardingPass(string &filter, Flight* thisFlight) {
-    if (filter.empty() || thisFlight == nullptr) {       //either invalid filter, or no boarding pass to print because they just wanted info        cout << "Error. No Boarding Pass to Print." << endl << endl;
+    if (filter.empty() || thisFlight == nullptr) {       //either invalid filter, or no boarding pass to print because they just wanted info
+        cout << "Error. No Boarding Pass to Print." << endl << endl;
     }
-    else {      //flight exists and a valid filter was passed in        // print out all relevant graph info by accessing the graph from map        //thinking sfml can print this out on ticket        cout << "Based on " << filter << " flight filter, the best flight(s) for you is:" << endl;
+    else {      //flight exists and a valid filter was passed in
+        // print out all relevant graph info by accessing the graph from map
+        //thinking sfml can print this out on ticket
+        cout << "Based on " << filter << " flight filter, the best flight(s) for you is:" << endl;
         cout << "Flight number: " << thisFlight->flightNumber << endl;
         cout << "Origin City: " << thisFlight->originCity << endl;
         cout << "Destination City: " << thisFlight->destinationCity << endl << endl;
@@ -167,7 +219,8 @@ void Graph::readCSVFile(string filename){
     string line, cityFrom, cityTo, countryFrom, countryTo, month, depTime, date, flightNum, temp , price, distance, duration, timeDiff, intl;
 
     while(getline(file, line)){
-        //fill out all the variables to create a flight object        stringstream ss(line);
+        //fill out all the variables to create a flight object
+        stringstream ss(line);
         getline(ss, cityFrom,',');
         getline(ss, countryFrom,',');
         getline(ss, cityTo,',');
@@ -182,7 +235,8 @@ void Graph::readCSVFile(string filename){
         getline(ss, intl,',');
         getline(ss, flightNum);
 
-        //create a flight object with these details        createMap(cityFrom, countryFrom, cityTo, countryFrom, price, distance, duration, timeDiff, month, date, depTime, intl, flightNum);
+        //create a flight object with these details
+        createMap(cityFrom, countryFrom, cityTo, countryFrom, price, distance, duration, timeDiff, month, date, depTime, intl, flightNum);
     }
 }
 
