@@ -6,6 +6,107 @@
 using namespace std;
 
 
+/*
+void showWelcomeScreen() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Welcome to the Travel App", sf::Style::Close);
+    sf::Font font;
+    if (!font.loadFromFile("arial.ttf")) {
+        cerr << "Failed to load arial.ttf" << endl;
+        return; // Exit if font not found
+    }
+
+    // Load a background image
+    sf::Texture backgroundTexture;
+    if (!backgroundTexture.loadFromFile("world_map.jpg")) {
+        cerr << "Failed to load world_map.jpg" << endl;
+        return; // Exit if background image not found
+    }
+    sf::Sprite background(backgroundTexture);
+
+    // Setup welcome text
+    sf::Text welcomeText("Welcome! Select an Option:", font, 30);
+    welcomeText.setFillColor(sf::Color::White);
+    welcomeText.setPosition(50, 50);
+
+    // Style the buttons with a more geographical theme
+    sf::RectangleShape mapButton(sf::Vector2f(250, 70));
+    mapButton.setPosition(275, 150);
+    mapButton.setFillColor(sf::Color(0, 102, 204, 150)); // Semi-transparent blue
+    sf::Text mapButtonText("Explore the Map", font, 25);
+    mapButtonText.setFillColor(sf::Color::White);
+    mapButtonText.setPosition(285, 165);
+
+    sf::RectangleShape passButton(sf::Vector2f(250, 70));
+    passButton.setPosition(275, 250);
+    passButton.setFillColor(sf::Color(102, 204, 0, 150)); // Semi-transparent green
+    sf::Text passButtonText("View Boarding Pass", font, 25);
+    passButtonText.setFillColor(sf::Color::White);
+    passButtonText.setPosition(285, 265);
+
+    // Add an animation or effect
+    sf::CircleShape animationCircle(40);
+    animationCircle.setFillColor(sf::Color(255, 255, 255, 50));
+    animationCircle.setPosition(400, 300);
+    float scale = 1.0f;
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+
+
+            // Check for mouse button pressed and hover effects
+            sf::Vector2f mouse(sf::Mouse::getPosition(window));
+            bool isMouseOverMapButton = mapButton.getGlobalBounds().contains(mouse);
+            bool isMouseOverPassButton = passButton.getGlobalBounds().contains(mouse);
+
+            if (event.type == sf::Event::MouseMoved) {
+                if (isMouseOverMapButton) {
+                    mapButton.setFillColor(sf::Color(0, 102, 204)); // Brighter color on hover
+                } else {
+                    mapButton.setFillColor(sf::Color(0, 102, 204, 150)); // Original color when not hovered
+                }
+                if (isMouseOverPassButton) {
+                    passButton.setFillColor(sf::Color(102, 204, 0)); // Brighter color on hover
+                } else {
+                    passButton.setFillColor(sf::Color(102, 204, 0, 150)); // Original color when not hovered
+                }
+            }
+
+            // Check for mouse button pressed
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2f mouse(sf::Mouse::getPosition(window));
+                if (mapButton.getGlobalBounds().contains(mouse)) {
+                    window.close();
+                    // Function to show map screen
+                } else if (passButton.getGlobalBounds().contains(mouse)) {
+                    window.close();
+                    // Function to show boarding pass screen
+                }
+            }
+        }
+
+        // Animate the circle
+        animationCircle.setScale(scale, scale);
+        scale += 0.005;
+        if (scale > 2.0) scale = 1.0;
+
+        window.clear();
+        window.draw(background); // Draw the background first
+        window.draw(welcomeText);
+        window.draw(mapButton);
+        window.draw(mapButtonText);
+        window.draw(passButton);
+        window.draw(passButtonText);
+        window.draw(animationCircle); // Draw the animated circle
+
+        window.display();
+    }
+}
+
+*/
 
 void MapScreen::loadPins() {
     ifstream file;
