@@ -6,20 +6,22 @@
 using namespace std;
 
 
-/*
-void showWelcomeScreen() {
+
+
+
+string WelcomeScreen::showWelcomeScreen() {
     sf::RenderWindow window(sf::VideoMode(800, 600), "Welcome to the Travel App", sf::Style::Close);
     sf::Font font;
     if (!font.loadFromFile("arial.ttf")) {
         cerr << "Failed to load arial.ttf" << endl;
-        return; // Exit if font not found
+        return ""; // Exit if font not found
     }
 
     // Load a background image
     sf::Texture backgroundTexture;
-    if (!backgroundTexture.loadFromFile("world_map.jpg")) {
+    if (!backgroundTexture.loadFromFile("images/world_map.jpg")) {
         cerr << "Failed to load world_map.jpg" << endl;
-        return; // Exit if background image not found
+        return ""; // Exit if background image not found
     }
     sf::Sprite background(backgroundTexture);
 
@@ -80,9 +82,11 @@ void showWelcomeScreen() {
                 sf::Vector2f mouse(sf::Mouse::getPosition(window));
                 if (mapButton.getGlobalBounds().contains(mouse)) {
                     window.close();
+                    return "map";
                     // Function to show map screen
                 } else if (passButton.getGlobalBounds().contains(mouse)) {
                     window.close();
+                    return "pass";
                     // Function to show boarding pass screen
                 }
             }
@@ -106,7 +110,8 @@ void showWelcomeScreen() {
     }
 }
 
-*/
+
+
 
 void MapScreen::loadPins() {
     ifstream file;
@@ -118,7 +123,7 @@ void MapScreen::loadPins() {
     temp.setOrigin(pinT.getSize().x/2, pinT.getSize().y);
     int x, y;
     string loc;
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < 99; i++){
         getline(file,loc);
         x = stoi(loc);
         getline(file,loc);
@@ -133,6 +138,8 @@ string MapScreen::getCityFromClick(sf::RenderWindow& window, int x, int y) {
     for(int i = 0; i < cityPts.size(); i++){
         sf::Sprite temp = cityPts[i];
         if(cityPts[i].getGlobalBounds().contains(x, y)){
+            cout << "line " << (2*i) + 1 << endl;
+            cout << "coordinates " << x << ", " << y << endl;
             return cityNames[i] + "\n";
         }
     }
@@ -158,6 +165,8 @@ MapScreen::MapScreen() {
     RT.loadFromFile("images/right.png");
     LT.loadFromFile("images/left.png");
 
+    pinT.loadFromFile("images/red_pin.png");
+
     zoomIn.setTexture(zoomInT);
     zoomIn.setPosition(40, 300);
 
@@ -179,14 +188,7 @@ MapScreen::MapScreen() {
     ifstream file;
     file.open("cityCoordinates.csv");
     file.close();
-//
-//    for(int i = 0; i < 20; i++){
-//        sf::Sprite temp;
-//        temp.setTexture(pinT);
-//        temp.setPosition()
-//    }
-    cityPts.push_back(pin);
-    cityPts.push_back(pin2);
+
 }
 
 void MapScreen::displayWindow() {
@@ -199,6 +201,7 @@ void MapScreen::displayWindow() {
     buttonView.setSize(window.getSize().x, window.getSize().y);
     int shiftL = 0, shiftR = 0, shiftU = 0, shiftD = 0, zIn = 0, zOut = 0;
 
+    int track = 45;
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -211,13 +214,13 @@ void MapScreen::displayWindow() {
                 int clickX = mouse.x;
                 int clickY = mouse.y;
                 if(zoomIn.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
-                    if(mapView.getSize().x > 395){
+                    if(zIn < 12){
                         mapView.setSize(mapView.getSize().x - 100, mapView.getSize().y - 46.85);
                         zIn += 1;
                         zOut -= 1;
                     }
                 }else if(zoomOut.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
-                    if(mapView.getSize().x >= 394 && mapView.getSize().x < 1494){
+                    if(zIn > 0){
                         mapView.setSize(mapView.getSize().x + 100, mapView.getSize().y + 46.85);
                         zIn -= 1;
                         zOut += 1;
@@ -244,11 +247,20 @@ void MapScreen::displayWindow() {
 
                     int totalClickX = window.mapPixelToCoords(mouse, mapView).x;
                     int totalClickY =  window.mapPixelToCoords(mouse, mapView).y;
+                    cout << totalClickX << ", " << totalClickY << endl;
                     string chosenCity = getCityFromClick(window, totalClickX, totalClickY);
                     cout << chosenCity;
-                    writeCityLocations(totalClickX, totalClickY);
+
+//                    cout << "Click on: " << cityNames[track + 1] << endl;
+//                    sf::Sprite temp;
+//                    temp.setTexture(pinT);
+//                    temp.setPosition(totalClickX, totalClickY);
+//                    temp.setOrigin(pinT.getSize().x/2, pinT.getSize().y-5);
+//                    cityPts.push_back(temp);
+//
+
+
                 }
-                //cout << mapView.getCenter().x << " " << mapView.getCenter().y << endl;
             }
         }
         window.clear(sf::Color::Red);
@@ -286,9 +298,10 @@ void Ticket::loadFont(const std::string& fontPath) {
     }
 }
 
-void Ticket::drawBoardingPass(const Flight& flight) {
+void Ticket::drawBoardingPass(const Flight flight) {
     // Clear previous content
     window.clear(backgroundColor);
+
 
     // Draw the boarding pass background
     sf::RectangleShape passBackground(sf::Vector2f(600, 300));
@@ -332,24 +345,24 @@ void Ticket::drawBoardingPass(const Flight& flight) {
     window.display();
 }
 
-void Ticket::run() {
-    std::vector<Flight> availableFlights = {
-            // Flight fetching logic
-    };
-    Flight selectedFlight;
-    while(window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-        }
-
-
-        handleUserInput(availableFlights, selectedFlight); // Allow the user to select a flight
-        drawBoardingPass(selectedFlight); // Draw the selected flight's boarding pass
-    }
-}
+//void Ticket::run() {
+//    std::vector<Flight> availableFlights = {
+//            // Flight fetching logic
+//    };
+//    Flight selectedFlight;
+//    while(window.isOpen()) {
+//        sf::Event event;
+//        while (window.pollEvent(event)) {
+//            if (event.type == sf::Event::Closed) {
+//                window.close();
+//            }
+//        }
+//
+//
+//        handleUserInput(availableFlights, selectedFlight); // Allow the user to select a flight
+//        drawBoardingPass(selectedFlight); // Draw the selected flight's boarding pass
+//    }
+//}
 
 void Ticket::handleUserInput(std::vector<Flight>& availableFlights, Flight& selectedFlight) {
     int index = 0;
