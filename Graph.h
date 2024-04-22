@@ -60,7 +60,7 @@ private:
                                                {"Bogota", 80}, {"Quito", 81}, {"Caracas", 82}, {"Brasilia", 83}, {"Santiago", 84},
                                                {"Montevideo", 85}, {"San Juan", 86}, {"Havana", 87}, {"Cairo", 88}, {"Marrakesh", 89},
                                                {"Abuja", 90}, {"Nairobi", 91}, {"Zanzibar", 92}, {"Cape Town", 93}, {"Prague",94},
-                                               {"San Fransisco", 95}, {"Honolulu", 96}, {"Santorini", 97}, {"Madeira", 98}, {"Oporto", 99}};
+                                               {"San Fransisco", 95}, {"Honolulu", 96}, {"Santorini", 97}, {"Madeira", 98}, {"Oporto", 99}}; //unordered map of cities and their corresponding position of 
 
     unordered_set<string> globalCities;     //keeps track of what cities have already been added
     unordered_map<string, string> cityCountry;  //keeps track of a city and it's country
@@ -78,7 +78,7 @@ private:
 public:
     Flight* current;
 
-    Graph(){
+    Graph(){ //constructor of a graph object to make everything nullptr
         for(int i = 0; i < 100; i++){
             for(int j = 0; j < 100; j ++){
                 g[i][j] = nullptr;
@@ -91,7 +91,7 @@ public:
 
     void getBest(string& filter, string& origin, string& dest);        //returns the best flight based on the filter passed in
     void printBoardingPass(string &filter, Flight* thisFlight); //prints the graph based off of filter and the best graph
-    void readCSVFile(string filename);
-    int n(string city);
-    string getCountry(string &city);
+    void readCSVFile(string filename);    //reads the csv file of data given and passes data to createmap function
+    int n(string city);        //returns the number/position of a city in a map
+    string getCountry(string &city);        //returns the country of a city
 };
