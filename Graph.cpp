@@ -253,7 +253,7 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
         }
 
         else {
-            cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to for ";
+            cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to for $";
             cout << otherInfo << " is: " << endl;
             for (int i = 1; i < destinations.size(); i++) {
                 cout << "\t" << i << ". " << destinations.at(i) << endl;
