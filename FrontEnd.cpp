@@ -143,6 +143,12 @@ void MapScreen::loadPins() {
 
 }
 
+/* Detects if a user's mouse click on the map corresponds to a city by checking if the click's 
+coordinates intersect with any of the city pin sprites' boundaries. If a match is found, it returns 
+the city's name; otherwise, it returns "NA" to indicate no city was selected at the click location.
+
+*/
+
 string MapScreen::getCityFromClick(sf::RenderWindow& window, int x, int y) {
     for(int i = 0; i < cityPts.size(); i++){
         sf::Sprite temp = cityPts[i];
@@ -155,6 +161,13 @@ string MapScreen::getCityFromClick(sf::RenderWindow& window, int x, int y) {
 
     return "NA";
 }
+
+
+/*
+Allows for dynamically adding new city locations to the map. It appends the coordinates of a new city 
+to the "cityCoordinates.csv" file, which can be used to update the map's data set and potentially add 
+new pins during runtime or subsequent sessions.
+*/
 
 void MapScreen::writeCityLocations(int x, int y ) {
     ofstream file;
@@ -402,6 +415,8 @@ void MapScreen::moveAllPrompts() {
     setTextRight(prev, 0,0);
 }
 
+
+
 void MapScreen::moveTextLocation(string interaction){
     if(interaction == "0"){
         setTextRight(select1, 1450, 600);
@@ -442,6 +457,14 @@ void MapScreen::moveTextLocation(string interaction){
         yes.setPosition(1400,530);
     }
 }
+
+
+/*
+
+This constructor sets up the map screen, initializing the map view with various control buttons for navigation 
+(zoom in/out, directional movement), and loads the textures for these controls from files. It also sets up 
+interface elements for user interactions such as confirming city selections and options for planning travel, 
+including budgets and selecting travel months.*/
 
 void MapScreen::putPromptsToScreen(sf::RenderWindow &window, string interactionStatus) {
     moveAllPrompts();
@@ -698,6 +721,13 @@ vector<string> MapScreen::displayWindow() {
     }
 }
 
+
+/*
+The constructor for the Ticket class initializes an instance with detailed information about a flight or a 
+route when direct flights are unavailable. It configures text objects for displaying all relevant flight information 
+or alternative routes, setting up the initial display state for showing a flight ticket or alternative travel options.
+*/
+
 Ticket::Ticket(vector<std::string> yourInformation) {
     font.loadFromFile("arial.ttf");
     if(yourInformation[0] == "NA"){
@@ -772,6 +802,10 @@ Ticket::Ticket(vector<std::string> yourInformation) {
 
 }
 
+/*Handles the display of alternative route information when a direct flight is not available. 
+It sequentially displays cities that can be traveled through as part of an alternative route, 
+updating the position of each text element dynamically to ensure clarity and readability.*/
+
 
 void Ticket::printAltRoute(sf::RenderWindow& window) {
     int begin = 180;
@@ -785,6 +819,12 @@ void Ticket::printAltRoute(sf::RenderWindow& window) {
     }
 }
 
+
+/*
+This function is the main loop for displaying the ticket information in a window. It manages the window's event handling 
+and updates the display to show either direct flight details or alternative route options, refreshing the window contents 
+continuously until the window is closed.
+*/
 void Ticket::draw() {
     // Initialize the main window of the application with a specific size and title.
     sf::RenderWindow window(sf::VideoMode(1200, 500), "Flight Ticket Booking", sf::Style::Close);
