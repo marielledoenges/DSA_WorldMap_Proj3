@@ -138,7 +138,7 @@ vector<string> Graph::minCity(string &origin, int &budget) {        //use a bfs 
 
 vector<string> Graph::path(string &origin, string &dest) {      //bfs to see if a path exists, firsts checks if a direct exists
     vector<string> final;
-    vector<string> noPath(1, origin);
+    vector<string> noPath;
     queue<string> q;      //have a queue with cities and prices to visit that city
     unordered_set<string> visited;        //have an unordered set that keeps track of all the visited cities
 
@@ -181,7 +181,7 @@ vector<string> Graph::path(string &origin, string &dest) {      //bfs to see if 
 }
 
 
-vector<string> Graph::getBest(string &filter, string &origin, string &dest) {
+vector<string> Graph::getBest(string filter, string origin, string dest, string otherInfo) {
     Flight* thisFlight = nullptr;
 
     if (filter == "Cheapest Direct Flight") {
@@ -217,35 +217,35 @@ vector<string> Graph::getBest(string &filter, string &origin, string &dest) {
     else if(filter == "Flight path") {
         vector<string> cities = path(origin,dest);
 
-        if (cities.size() == 1) {
+        if (cities.size() == 0) {
             cout << "No path exists between " << origin << " and " << dest << ". " << endl;
+            return cities;
         }
         else if (cities.size() == 2) {
             cout << "A direct flight exists between " << origin << " and " << dest << ". " << endl;
+            thisFlight = g[n(origin)][n(dest)];
+
         }
         else {
+            cout << "No boarding pass to print. " << endl;
             cout << "One suggested path found between " << origin << " and " << dest << " is: " << endl;
 
             for (int i = 0; i < cities.size(); i++) {
                 cout << i+1 << ". " << cities.at(i) << endl;
             }
+            return cities;
         }
     }
     else if (filter == "Month") {
-        string temp;
-        cout << "What month are you looking at flying? " << endl;
-        cin >> temp;
-        thisFlight = flightMonth(origin, temp);
+        thisFlight = flightMonth(origin, otherInfo);
 
         if (thisFlight == nullptr) {
-            cout << "No direct flight from " << origin << " in " << temp << " was found." << endl;
+            cout << "No direct flight from " << origin << " in " << otherInfo << " was found." << endl;
         }
     }
     else if (filter == "Minimum Num Cities") {
-        int temp;
-        cout << "What's your budget? " << endl;
-        cin >> temp;
-        vector<string> destinations = minCity(origin, temp);
+        int budget = stoi(otherInfo);
+        vector<string> destinations = minCity(origin, budget);
 
         if (destinations.size() == 1) {
             cout << "You cannot travel to any destination from " << origin << " with this budget. " << endl;
@@ -256,6 +256,7 @@ vector<string> Graph::getBest(string &filter, string &origin, string &dest) {
             for (int i = 1; i < destinations.size(); i++) {
                 cout << "\tab" << i << ". " << destinations.at(i) << endl;
             }
+            return destinations;
         }
     }
     else {
