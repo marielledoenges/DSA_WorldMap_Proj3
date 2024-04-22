@@ -176,7 +176,7 @@ struct MapScreen{
 
 
     MapScreen();
-    void displayWindow();
+    vector<string> displayWindow();
     string getCityFromClick(sf::RenderWindow& window, int x, int y);
     void loadPins();
     void writeCityLocations(int x, int y);
@@ -198,41 +198,23 @@ struct MapScreen{
 
 
 struct Ticket{
-/*
-
-string cityFrom, string countryFrom, string cityTo, string countryTo,
-                      string price,string distance, string duration, string timeZoneDiff,
-                      string month, string date, string departureTime, string international, string flightNum
-*/
-
     sf::RenderWindow window;
     sf::Font font;
-    sf::Color backgroundColor = sf::Color::White;
-    sf::Color textColor = sf::Color::Black;
-    sf::Color outlineColor = sf::Color::Black;
 
     sf::Texture barCodeT;
     sf::Sprite barCode;
 
-    sf::Text name;
-    sf::Text originCity;
-    sf::Text originCountry;
-    sf::Text destCity;
-    sf::Text destCountry;
-    sf::Text month;
-    sf::Text date;
-    sf::Text flightNum;
+    sf::Text name, originCity, originCountry, destCity, destCountry, price, dist,
+            dur, TZdiff, month, date, depTime, intl, flightNum;
 
 
-
+    Ticket(string noFlight);
     Ticket(vector<string> yourInformation);
-    void loadFont(const std::string& fontPath);
-    void drawBoardingPass(const Flight flight);
     void setText(sf::Text &text, float x, float y){
         sf::FloatRect textRect = text.getLocalBounds();
         text.setOrigin(textRect.left + textRect.width/2.0f,
                        textRect.top + textRect.height/2.0f);
         text.setPosition(sf::Vector2f(x, y));
     }
-    void run();
+    void draw();
 };

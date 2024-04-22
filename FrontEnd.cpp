@@ -28,8 +28,8 @@ string WelcomeScreen::showWelcomeScreen() {
     sf::Sprite background(backgroundTexture);
 
     // Setup welcome text
-    sf::Text welcomeText("Welcome to DSA Project 3! By Eneida Escobar, Marielle Doenges, and Maggie Snead", font, 30);
-    welcomeText.setFillColor(sf::Color::Black);
+    sf::Text welcomeText("Welcome! Select an Option:", font, 30);
+    welcomeText.setFillColor(sf::Color::White);
     welcomeText.setPosition(50, 50);
 
     // Style the buttons with a more geographical theme
@@ -40,16 +40,12 @@ string WelcomeScreen::showWelcomeScreen() {
     mapButtonText.setFillColor(sf::Color::White);
     mapButtonText.setPosition(285, 165);
 
-    /*
-
     sf::RectangleShape passButton(sf::Vector2f(250, 70));
     passButton.setPosition(275, 250);
     passButton.setFillColor(sf::Color(102, 204, 0, 150)); // Semi-transparent green
     sf::Text passButtonText("View Boarding Pass", font, 25);
     passButtonText.setFillColor(sf::Color::White);
     passButtonText.setPosition(285, 265);
-
-*/
 
     // Add an animation or effect
     sf::CircleShape animationCircle(40);
@@ -490,7 +486,7 @@ void MapScreen::putPromptsToScreen(sf::RenderWindow &window, string interactionS
     }
 }
 
-void MapScreen::displayWindow() {
+vector<string> MapScreen::displayWindow() {
     Graph backEnd;
     backEnd.readCSVFile("proj3DataTest.csv");
     sf::RenderWindow window(sf::VideoMode(1494,700), "testing", sf::Style::Close);
@@ -502,6 +498,7 @@ void MapScreen::displayWindow() {
     buttonView.setSize(window.getSize().x, window.getSize().y);
     int shiftL = 0, shiftR = 0, shiftU = 0, shiftD = 0, zIn = 0, zOut = 0;
 
+    vector<string> toReturn;
 
     string interaction = "0";
     int monthIdx = 0;
@@ -510,7 +507,8 @@ void MapScreen::displayWindow() {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                return;
+                window.close();
+                return toReturn;
             }
             if(event.type == sf::Event::MouseButtonReleased){
                 sf::Vector2i mouse;
@@ -518,7 +516,7 @@ void MapScreen::displayWindow() {
                 int clickX = mouse.x;
                 int clickY = mouse.y;
 
-                cout << clickX << ", " << clickY << endl;
+                //cout << clickX << ", " << clickY << endl;
                 if(zoomIn.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
                     if(zIn < 12){
                         mapView.setSize(mapView.getSize().x - 100, mapView.getSize().y - 46.85);
@@ -599,12 +597,13 @@ void MapScreen::displayWindow() {
                     filter = "Flight path";
                     otherInfo = "";
                     vector<string> final = backEnd.getBest(filter, origin, dest, otherInfo);
-                    //FIXME AND PASS FINAL VECTOR INTO BOARDING PASS WINDOW
 
-                    cout << endl << endl;
                     for(auto item : final){
-                        cout << item << ", ";
+                        cout << item << endl;
                     }
+                    //FIXME AND PASS FINAL VECTOR INTO BOARDING PASS WINDOW
+                    window.close();
+                    return final;
 
                 }else if(restartBorder.getGlobalBounds().contains(window.mapPixelToCoords(mouse))) {
                     interaction = "0";
@@ -684,8 +683,6 @@ void MapScreen::displayWindow() {
         window.draw(restartBorder);
         window.draw(restart);
         putPromptsToScreen(window, interaction);
-        //window.draw(select1);
-
 
         window.display();
 
@@ -693,57 +690,39 @@ void MapScreen::displayWindow() {
 }
 
 Ticket::Ticket(vector<std::string> yourInformation) {
+    font.loadFromFile("arial.ttf");
     originCity.setFont(font);
-    if(yourInformation.size() == 0){
-        name.setString("No boarding pass available");
-    }else{
-        originCity.setString(yourInformation[0]);
-        originCountry.setString(yourInformation[1]);
-    }
+    name.setString("Marielle, Maggie and Enedia");
+
+    originCity.setString(yourInformation[0]);
+    originCountry.setString(yourInformation[1]);
+    destCity.setString(yourInformation[2]);
+    destCountry.setString(yourInformation[3]);
+    price.setString(yourInformation[4]);
+    dist.setString(yourInformation[5]);
+    dur.setString(yourInformation[6]);
+    TZdiff.setString(yourInformation[7]);
+    month.setString(yourInformation[8]);
+    date.setString(yourInformation[9]);
+    depTime.setString(yourInformation[10]);
+    intl.setString(yourInformation[11]);
+    flightNum.setString(yourInformation[12]);
+
 }
 
-void Ticket::run() {
+
+Ticket::Ticket(string noFlight) {
+    font.loadFromFile("arial.ttf");
+    name.setString("No flight available. No boarding pass to create");
+    name.setFont(font);
+    name.setPosition(500, 250);
+}
+
+
+
+void Ticket::draw() {
     // Initialize the main window of the application with a specific size and title.
     sf::RenderWindow window(sf::VideoMode(800, 600), "Flight Ticket Booking", sf::Style::Close);
-
-    // Load the font from a file to ensure that all text rendered in the application uses this font.
-    loadFont("arial.ttf");
-    name.setString("Marielle, Eneida and Maggie");
-    name.setFont(font);
-
-    // Retrieve a list of available flights from data source.
-    std::vector<Flight> availableFlights;
-
-    // Check if the flight data is available. If not, log an error message and exit the function.
-    if (availableFlights.empty()) {
-        std::cerr << "No flights available at this time." << std::endl;
-        return; // Early exit if no flights are available to display
-    }
-
-    // Variables for managing the state of selected flight.
-    Flight selectedFlight;  // This variable will hold the details of the selected flight.
-    int selectedIndex = -1; // This variable tracks the index of the selected flight in the vector.
-
-    // Setup the header text at the top of the window to instruct the user.
-    sf::Text header("Select a Flight:", font, 24);
-    header.setPosition(50, 20);
-    header.setFillColor(sf::Color::Black);
-
-    // Create a vector to store the text elements for flight options displayed on the screen.
-    std::vector<sf::Text> flightOptions;
-    for (size_t i = 0; i < availableFlights.size(); i++) {
-
-        //need helo w  formatted flight info string
-        sf::Text option(availableFlights[i].(), font, 20);
-        option.setPosition(50, 70 + i * 30);
-        option.setFillColor(sf::Color::Blue); // Initial color for unselected options.
-        flightOptions.push_back(option);
-    }
-
-    // Set up a back button that allows the user to exit or go back to the previous menu.
-    sf::Text backButton("Back", font, 20);
-    backButton.setPosition(700, 550);
-    backButton.setFillColor(sf::Color::Red);
 
     // Main event loop that runs as long as the window is open.
     while (window.isOpen()) {
@@ -751,58 +730,27 @@ void Ticket::run() {
         // Poll for and process events.
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                window.close(); // Close the window if the close event is triggered.
-            }
-
-            // Check for mouse movements to update hover effects on the flight options.
-            if (event.type == sf::Event::MouseMoved) {
-                for (auto& option : flightOptions) {
-                    // Change color to a lighter shade when the mouse hovers over an option.
-                    if (option.getGlobalBounds().contains(event.mouseMove.x, event.mouseMove.y)) {
-                        option.setFillColor(sf::Color(100, 100, 255));
-                    } else {
-                        option.setFillColor(sf::Color::Blue); // Reset color when not hovered.
-                    }
-                }
-            }
-
-            // Handle mouse button presses to select a flight option.
-            if (event.type == sf::Event::MouseButtonPressed) {
-                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                // Check if the back button is pressed.
-                if (backButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                    window.close(); // Close the window on back button click.
-                    return;
-                }
-
-                // Determine which flight option was clicked.
-                for (int i = 0; i < flightOptions.size(); i++) {
-                    if (flightOptions[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        selectedIndex = i; // Update the selected index.
-                        selectedFlight = availableFlights[i]; // Update the selected flight.
-                        // Highlight the selected option by changing its color to green.
-                        flightOptions[i].setFillColor(sf::Color::Green);
-                        break;
-                    }
-                }
+                window.close();
+                return;
             }
         }
-
-        // Clear the window and redraw all components.
+        // Clear the window and draw all components.
         window.clear(sf::Color::White);
-        window.draw(header);
         window.draw(name);
-        for (auto& option : flightOptions) {
-            window.draw(option);
-        }
-        window.draw(backButton);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
+        window.draw(name);
 
-        // If a flight is selected, display its boarding pass.
-        if (selectedIndex != -1) {
-            drawBoardingPass(selectedFlight);
-        }
-
-        // Display the updated window contents.
         window.display();
     }
 }
