@@ -66,9 +66,11 @@ private:
     unordered_map<string, string> cityCountry;  //keeps track of a city and it's country
     Flight* g[100][100];     //graph representation of matrix
 
+    Flight* priceTwoCites(string &origin, string &dest);    //given a starting and destination city return the price of a direct flight if applicable
     Flight* cheapestDirect(string &origin);     //given a starting city, returns cheapest direct flight number
     Flight* directExists(string &origin, string &dest);        //returns flightNum if a direct graph exists between two cities
     Flight* flightMonth(string &origin, string  &month);        //returns the flight number of cheapest flight in a given month, returns empty if no flight exists
+    Flight* cheapestIntl(string &origin);           //finds the cheapest international flight 
     vector<string> minCity(string &origin, int &budget);        //cheapest way to get between two places if possible, returns a vector of flight numbers. should be generalized
     vector<string> path(string &origin, string &dest);      //returns a vector of cities to get between two cities if possible
     bool international(string &origin, string &dest);    //returns if the graph is international or not
@@ -89,7 +91,6 @@ public:
 
     void getBest(string& filter, string& origin, string& dest);        //returns the best flight based on the filter passed in
     void printBoardingPass(string &filter, Flight* thisFlight); //prints the graph based off of filter and the best graph
-    Flight* cheapestIntl(string &origin);
     void readCSVFile(string filename);
     int n(string city);
     string getCountry(string &city);
