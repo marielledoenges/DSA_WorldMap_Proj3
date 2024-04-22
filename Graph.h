@@ -95,4 +95,5 @@ public:
     void readCSVFile(string filename);    //reads the csv file of data given and passes data to createmap function
     int n(string city);        //returns the number/position of a city in a map
     string getCountry(string &city);        //returns the country of a city
+    string monthNum(string month);     //returns a number corresponding to a month
 };
