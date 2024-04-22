@@ -1,5 +1,6 @@
 # DSA_WorldMap_Proj3
 100 cities around the world with various flight information available to manipulate.
+To run this code, you will need every single file provided in this github repository. Marielle Doenges pushed the data csv file which added 7200 lines to her push count that were't actually code.
 
 
 #Flight and Travel Optimizers
