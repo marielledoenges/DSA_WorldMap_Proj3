@@ -205,8 +205,9 @@ struct Ticket{
     sf::Sprite barCode;
 
     sf::Text name, originCity, originCountry, destCity, destCountry, price, dist,
-            dur, TZdiff, month, date, depTime, intl, flightNum;
+            dur, TZdiff, month, date, depTime, intl, flightNum, NAmessage;
 
+    vector<string> otherCities;
 
     Ticket(string noFlight);
     Ticket(vector<string> yourInformation);
@@ -217,4 +218,5 @@ struct Ticket{
         text.setPosition(sf::Vector2f(x, y));
     }
     void draw();
+    void printAltRoute(sf::RenderWindow& window);
 };

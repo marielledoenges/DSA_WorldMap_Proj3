@@ -28,8 +28,8 @@ string WelcomeScreen::showWelcomeScreen() {
     sf::Sprite background(backgroundTexture);
 
     // Setup welcome text
-    sf::Text welcomeText("Welcome to DSA PROJECT 3! By Eneida Escobar, Marielle Doenges, and Maggie Snead", font, 30);
-    welcomeText.setFillColor(sf::Color::Black);
+    sf::Text welcomeText("Welcome! Select an Option:", font, 30);
+    welcomeText.setFillColor(sf::Color::White);
     welcomeText.setPosition(50, 50);
 
     // Style the buttons with a more geographical theme
@@ -40,16 +40,12 @@ string WelcomeScreen::showWelcomeScreen() {
     mapButtonText.setFillColor(sf::Color::White);
     mapButtonText.setPosition(285, 165);
 
-    /*
-
     sf::RectangleShape passButton(sf::Vector2f(250, 70));
     passButton.setPosition(275, 250);
     passButton.setFillColor(sf::Color(102, 204, 0, 150)); // Semi-transparent green
     sf::Text passButtonText("View Boarding Pass", font, 25);
     passButtonText.setFillColor(sf::Color::White);
     passButtonText.setPosition(285, 265);
-
-*/
 
     // Add an animation or effect
     sf::CircleShape animationCircle(40);
@@ -695,38 +691,94 @@ vector<string> MapScreen::displayWindow() {
 
 Ticket::Ticket(vector<std::string> yourInformation) {
     font.loadFromFile("arial.ttf");
+    if(yourInformation[0] == "NA"){
+
+        name.setString("No direct flight available. No boarding pass to create.");
+        name.setFont(font);
+        name.setFillColor(sf::Color::Black);
+        setText(name, 600, 100);
+
+        NAmessage.setString("However, you can fly from " + yourInformation[1]);
+        NAmessage.setFont(font);
+        NAmessage.setFillColor(sf::Color::Black);
+        setText(NAmessage, 600, 150);
+        for(int i = 2; i < yourInformation.size(); i++){
+            otherCities.push_back(yourInformation[i]);
+        }
+
+    }else {
+        name.setString("Marielle, Maggie and Enedia");
+        name.setFont(font);
+        name.setFillColor(sf::Color::Black);
+
+        flightNum.setString(yourInformation[0]);
+        flightNum.setFont(font);
+        flightNum.setFillColor(sf::Color::Black);
+
+        originCity.setString(yourInformation[1]);
+        originCity.setFont(font);
+        originCity.setFillColor(sf::Color::Black);
+
+        originCountry.setString(yourInformation[2]);
+        originCountry.setFont(font);
+        originCountry.setFillColor(sf::Color::Black);
+
+        destCity.setString(yourInformation[3]);
+        destCity.setFont(font);
+        destCity.setFillColor(sf::Color::Black);
+
+        destCountry.setString(yourInformation[4]);
+        destCountry.setFont(font);
+        destCountry.setFillColor(sf::Color::Black);
+
+        month.setString(yourInformation[5]);
+        month.setFont(font);
+        month.setFillColor(sf::Color::Black);
+
+        date.setString(yourInformation[6]);
+        date.setFont(font);
+        date.setFillColor(sf::Color::Black);
+
+        depTime.setString(yourInformation[7]);
+        depTime.setFont(font);
+        depTime.setFillColor(sf::Color::Black);
+
+        dur.setString(yourInformation[8]);
+        dur.setFont(font);
+        dur.setFillColor(sf::Color::Black);
+
+        dist.setString(yourInformation[9]);
+        dist.setFont(font);
+        dist.setFillColor(sf::Color::Black);
+
+        TZdiff.setString(yourInformation[10]);
+        TZdiff.setFont(font);
+        TZdiff.setFillColor(sf::Color::Black);
+
+        price.setString(yourInformation[11]);
+        price.setFont(font);
+        price.setFillColor(sf::Color::Black);
+
+    }
+
+}
+
+
+void Ticket::printAltRoute(sf::RenderWindow& window) {
+    int begin = 180;
+    originCity.setFillColor(sf::Color::Black);
     originCity.setFont(font);
-    name.setString("Marielle, Maggie and Enedia");
-
-    originCity.setString(yourInformation[0]);
-    originCountry.setString(yourInformation[1]);
-    destCity.setString(yourInformation[2]);
-    destCountry.setString(yourInformation[3]);
-    price.setString(yourInformation[4]);
-    dist.setString(yourInformation[5]);
-    dur.setString(yourInformation[6]);
-    TZdiff.setString(yourInformation[7]);
-    month.setString(yourInformation[8]);
-    date.setString(yourInformation[9]);
-    depTime.setString(yourInformation[10]);
-    intl.setString(yourInformation[11]);
-    flightNum.setString(yourInformation[12]);
-
+    for(int i = 0; i < otherCities.size(); i++){
+        originCity.setString("to " + otherCities[i]);
+        setText(originCity, 600, begin);
+        begin += 40;
+        window.draw(originCity);
+    }
 }
-
-
-Ticket::Ticket(string noFlight) {
-    font.loadFromFile("arial.ttf");
-    name.setString("No flight available. No boarding pass to create");
-    name.setFont(font);
-    name.setPosition(500, 250);
-}
-
-
 
 void Ticket::draw() {
     // Initialize the main window of the application with a specific size and title.
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Flight Ticket Booking", sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(1200, 500), "Flight Ticket Booking", sf::Style::Close);
 
     // Main event loop that runs as long as the window is open.
     while (window.isOpen()) {
@@ -738,22 +790,30 @@ void Ticket::draw() {
                 return;
             }
         }
+
+//        originCity, originCountry, destCity, destCountry, price, dist,
+//                dur, TZdiff, month, date, depTime, intl, flightNum, NAmessage;
         // Clear the window and draw all components.
         window.clear(sf::Color::White);
         window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
-        window.draw(name);
+
+        if(otherCities.size() != 0){
+            printAltRoute(window);
+            window.draw(NAmessage);
+        }else {
+            window.draw(originCity);
+            window.draw(originCountry);
+            window.draw(destCity);
+            window.draw(destCountry);
+            window.draw(price);
+            window.draw(dist);
+            window.draw(dur);
+            window.draw(TZdiff);
+            window.draw(month);
+            window.draw(date);
+            window.draw(depTime);
+            window.draw(flightNum);
+        }
 
         window.display();
     }
