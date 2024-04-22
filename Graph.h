@@ -63,7 +63,7 @@ private:
                                                {"San Fransisco", 95}, {"Honolulu", 96}, {"Santorini", 97}, {"Madeira", 98}, {"Oporto", 99}};
 
     unordered_set<string> globalCities;     //keeps track of what cities have already been added
-    map<string, Flight*> flightPair;        //maps a specific flight number with a specific flight
+    unordered_map<string, string> cityCountry;  //keeps track of a city and it's country
     Flight* g[100][100];     //graph representation of matrix
 
     Flight* cheapestDirect(string &origin);     //given a starting city, returns cheapest direct flight number
@@ -92,4 +92,5 @@ public:
     Flight* cheapestIntl(string &origin);
     void readCSVFile(string filename);
     int n(string city);
+    string getCountry(string &city);
 };
