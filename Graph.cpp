@@ -234,6 +234,8 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
             for (int i = 0; i < cities.size(); i++) {
                 cout << i+1 << ". " << cities.at(i) << endl;
             }
+            cout << endl;
+            cout << "No Boarding Pass to Print." << endl << endl;
             return cities;
         }
     }
@@ -281,15 +283,23 @@ vector<string> Graph::printBoardingPass(string &filter, Flight* thisFlight) {
     else {      //flight exists and a valid filter was passed in
         // print out all relevant graph info by accessing the graph from map
         //thinking sfml can print this out on ticket
-        cout << "Based on " << filter << " flight filter, the best flight(s) for you is:" << endl;
+        cout << "Based on " << filter << " filter, the best flight for you is:" << endl;
         cout << "Flight number:" << thisFlight->flightNumber << endl;
         cout << "Origin:" << thisFlight->originCity << " ," << thisFlight->originCountry <<  endl;
         cout << "Destination:" << thisFlight->destinationCity << " ," << thisFlight->destCountry <<  endl << endl;
         cout << "Date: " << thisFlight->month << ", " << thisFlight->date << endl;
         cout << "Departure Time:" << thisFlight->time << endl;
-        cout << "Time of Travel:" << thisFlight->duration << " hours" << endl;
+        cout << "Time of Travel:" << thisFlight->duration;
+        if (thisFlight->duration = 1)
+          cout << " hour" << endl;
+        else 
+          cout << " hours" << endl;
         cout << "Distance of Travel:" << thisFlight->distance << " miles" << endl;
-        cout << "Time Zone Difference:" << thisFlight->timeDiff << " hours" << endl << endl;
+        cout << "Time Zone Difference:" << thisFlight->timeDiff;
+         if (thisFlight->timeDiff = 1)
+          cout << " hour" << endl << endl;
+        else 
+          cout << " hours" << endl << endl;
         cout << "The Price for This Flight is:$" << thisFlight->price << endl << endl;
 
         final.push_back(thisFlight->flightNumber);      //push back all flight info into a vector so window of printing boarding pass can be easily achieved
