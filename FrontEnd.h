@@ -198,6 +198,13 @@ struct MapScreen{
 
 
 struct Ticket{
+/*
+
+string cityFrom, string countryFrom, string cityTo, string countryTo,
+                      string price,string distance, string duration, string timeZoneDiff,
+                      string month, string date, string departureTime, string international, string flightNum
+*/
+
     sf::RenderWindow window;
     sf::Font font;
     sf::Color backgroundColor = sf::Color::White;
@@ -212,6 +219,11 @@ struct Ticket{
     sf::Text originCountry;
     sf::Text destCity;
     sf::Text destCountry;
+    sf::Text month;
+    sf::Text date;
+    sf::Text flightNum;
+
+
 
     Ticket(vector<string> yourInformation);
     void loadFont(const std::string& fontPath);
