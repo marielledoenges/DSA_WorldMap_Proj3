@@ -17,7 +17,7 @@ Follow these steps to get the application up and running on your local machine:
 
 #Clone the Repository:
 Clone this repository to your local machine using git:
-git clone https://github.com/FlightOptimizers/FlightApp.git cd FlightApp
+git clone https://github.com/marielledoenges/DSA_WorldMap_Proj3/edit/main/README.md cd FlightApp
 
 #Install SFML:
 On Ubuntu:
