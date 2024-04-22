@@ -38,7 +38,7 @@ struct MapScreen{
     sf::Text checkDirect;
     sf::Text getPass;
 
-    string origin, dest, placeHold;
+    string origin, dest, placeHold, otherInfo, filter;
 
     vector<sf::Sprite> cityPts;
     vector<string> cityNames = {"Tampa", "Gainesville", "Paris", "London", "New York",
