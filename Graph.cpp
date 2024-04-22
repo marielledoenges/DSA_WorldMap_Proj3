@@ -184,6 +184,7 @@ vector<string> Graph::path(string &origin, string &dest) {      //bfs to see if 
 
 vector<string> Graph::getBest(string filter, string origin, string dest, string otherInfo) {
     Flight* thisFlight = nullptr;
+    string newFilter = "Info";
 
     if (filter == "Cheapest Direct Flight") {
         thisFlight = cheapestDirect(origin);     //if the filter is cheap then we call cheapest graph helper function
@@ -225,7 +226,7 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
         else if (cities.size() == 2) {
             cout << "A direct flight exists between " << origin << " and " << dest << ". " << endl;
             thisFlight = g[n(origin)][n(dest)];
-
+            newFilter = "Boarding Pass";
         }
         else {
             cout << "No boarding pass to print. " << endl;
@@ -247,6 +248,8 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
     else if (filter == "Minimum Num Cities") {
         int budget = stoi(otherInfo);
         vector<string> destinations = minCity(origin, budget);
+        vector<string> toReturn;
+        string temp;
 
         if (destinations.size() == 1) {
             cout << "You cannot travel to any destination from " << origin << " with this budget. " << endl;
@@ -255,18 +258,27 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
         else {
             cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to for ";
             cout << otherInfo << " is: " << endl;
+            temp.append("Starting at ");
+            temp.append(origin);
+            temp.append("\n");
+            temp.append("the minimum number of cities you can fly to is:\n");
             for (int i = 1; i < destinations.size(); i++) {
                 cout << "\t" << i << ". " << destinations.at(i) << endl;
+                temp.append(to_string(i));
+                temp.append(". ");
+                temp.append(destinations.at(i));
+                temp.append("\n");
             }
-            return destinations;
+            toReturn.push_back(temp);
+            return toReturn;
         }
     }
     else {
-        filter = "";
+        newFilter = "";
     }
 
     cout << endl;
-    vector<string> info = printBoardingPass(filter, thisFlight);
+    vector<string> info = printBoardingPass(newFilter, thisFlight);
     delete thisFlight;
 
     return info;
@@ -323,23 +335,62 @@ string Graph::getCountry(string &city) {
 
 vector<string> Graph::printBoardingPass(string &filter, Flight* thisFlight) {
     vector<string> final;
-    if (filter.empty() || thisFlight == nullptr) {       //either invalid filter, or no boarding pass to print because they just wanted info
-        cout << "No Boarding Pass to Print." << endl << endl;
+    if (filter == " " || thisFlight == nullptr) {
+        final.emplace_back("No info available \n");
+        return final;
+    }
+    else if (filter == "Info") {       //either invalid filter, or no boarding pass to print because they just wanted info
+        string flightNum = "Flight number:";
+        flightNum.append(thisFlight->flightNumber);
+
+        string longString = "The best flight for you is: \n";
+        longString.append("Origin:");
+        longString.append(thisFlight->originCity);
+        longString.append(", ");
+        longString.append(thisFlight->originCountry);
+        longString.append("\n");
+
+        longString.append("Dest.:");
+        longString.append(thisFlight->destinationCity);
+        longString.append(", ");
+        longString.append(thisFlight->destCountry);
+        longString.append("\n");
+
+        longString.append("Date:");
+        longString.append(thisFlight->month);
+        longString.append(", ");
+        longString.append(thisFlight->date);
+        longString.append("\n");
+
+        longString.append("Departure Time:");
+        longString.append(thisFlight->month);
+        longString.append(", ");
+        longString.append(thisFlight->date);
+        longString.append("\n");
+
+        longString.append("Duration:");
+        longString.append(thisFlight->duration);
+        longString.append(" hours\n");
+
+        longString.append("Distance:");
+        longString.append(thisFlight->distance);
+        longString.append(" miles\n");
+
+        longString.append("Time Zone Difference:");
+        longString.append(thisFlight->timeDiff);
+        longString.append(" hours \n");
+
+        longString.append("Price:$");
+        longString.append(to_string(thisFlight->price));
+        longString.append("\n");
+
+        final.push_back(longString);
+
         return final;       //nothing to print
     }
     else {      //flight exists and a valid filter was passed in
         // print out all relevant graph info by accessing the graph from map
         //thinking sfml can print this out on ticket
-        cout << "Based on " << filter << " flight filter, the best flight(s) for you is:" << endl;
-        cout << "Flight number:" << thisFlight->flightNumber << endl;
-        cout << "Origin:" << thisFlight->originCity << " ," << thisFlight->originCountry <<  endl;
-        cout << "Destination:" << thisFlight->destinationCity << " ," << thisFlight->destCountry <<  endl << endl;
-        cout << "Date: " << thisFlight->month << ", " << thisFlight->date << endl;
-        cout << "Departure Time:" << thisFlight->time << endl;
-        cout << "Time of Travel:" << thisFlight->duration << " hours" << endl;
-        cout << "Distance of Travel:" << thisFlight->distance << " miles" << endl;
-        cout << "Time Zone Difference:" << thisFlight->timeDiff << " hours" << endl << endl;
-        cout << "The Price for This Flight is:$" << thisFlight->price << endl << endl;
 
         string numMonth = monthNum(thisFlight->month);
 
