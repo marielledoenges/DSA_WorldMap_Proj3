@@ -20,16 +20,16 @@ struct Flight {
     string month;
     string date;
     string flightNumber;       //how we will distinguish different flights
-    int distance;
+    string distance;
     int price;    // Cost of the graph in USD.
-    int duration; // Duration of the graph in hours
-    float timeDiff;   //time difference between two cities
+    string duration; // Duration of the graph in hours
+    string timeDiff;   //time difference between two cities
     bool intl;
 
     //constructor of our flight object
     Flight(){};
-    Flight(string &cityFrom, string &countryFrom,string &cityTo, string &countryTo,int &priceGiven, int &distanceGiven,
-           int &durationGiven, float &timeZoneDiff, string &monthGiven, string &dateGiven, string &departureTime,
+    Flight(string &cityFrom, string &countryFrom,string &cityTo, string &countryTo,int &priceGiven, string &distanceGiven,
+           string &durationGiven, string &timeZoneDiff, string &monthGiven, string &dateGiven, string &departureTime,
            bool &international, string &number):
 
             originCity(cityFrom), originCountry(countryFrom), destinationCity(cityTo), destCountry(countryTo), price(priceGiven), distance(distanceGiven),
@@ -60,7 +60,7 @@ private:
                                                {"Bogota", 80}, {"Quito", 81}, {"Caracas", 82}, {"Brasilia", 83}, {"Santiago", 84},
                                                {"Montevideo", 85}, {"San Juan", 86}, {"Havana", 87}, {"Cairo", 88}, {"Marrakesh", 89},
                                                {"Abuja", 90}, {"Nairobi", 91}, {"Zanzibar", 92}, {"Cape Town", 93}, {"Prague",94},
-                                               {"San Fransisco", 95}, {"Honolulu", 96}, {"Santorini", 97}, {"Madeira", 98}, {"Oporto", 99}}; //unordered map of cities and their corresponding position of 
+                                               {"San Fransisco", 95}, {"Honolulu", 96}, {"Santorini", 97}, {"Madeira", 98}, {"Oporto", 99}}; //unordered map of cities and their corresponding position of
 
     unordered_set<string> globalCities;     //keeps track of what cities have already been added
     unordered_map<string, string> cityCountry;  //keeps track of a city and it's country
@@ -70,7 +70,7 @@ private:
     Flight* cheapestDirect(string &origin);     //given a starting city, returns cheapest direct flight number
     Flight* directExists(string &origin, string &dest);        //returns flightNum if a direct graph exists between two cities
     Flight* flightMonth(string &origin, string  &month);        //returns the flight number of cheapest flight in a given month, returns empty if no flight exists
-    Flight* cheapestIntl(string &origin);           //finds the cheapest international flight 
+    Flight* cheapestIntl(string &origin);           //finds the cheapest international flight
     vector<string> minCity(string &origin, int &budget);        //cheapest way to get between two places if possible, returns a vector of flight numbers. should be generalized
     vector<string> path(string &origin, string &dest);      //returns a vector of cities to get between two cities if possible
     bool international(string &origin, string &dest);    //returns if the graph is international or not
@@ -89,8 +89,8 @@ public:
                    string price,string distance, string duration, string timeZoneDiff,
                    string month, string date, string departureTime, string international, string flightNum); //creating actual map
 
-    void getBest(string& filter, string& origin, string& dest);        //returns the best flight based on the filter passed in
-    void printBoardingPass(string &filter, Flight* thisFlight); //prints the graph based off of filter and the best graph
+    vector<string> getBest(string& filter, string& origin, string& dest);        //returns the best flight based on the filter passed in
+    vector<string> printBoardingPass(string &filter, Flight* thisFlight); //prints the graph based off of filter and the best graph
     void readCSVFile(string filename);    //reads the csv file of data given and passes data to createmap function
     int n(string city);        //returns the number/position of a city in a map
     string getCountry(string &city);        //returns the country of a city
