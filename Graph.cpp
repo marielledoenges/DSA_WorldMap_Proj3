@@ -290,13 +290,13 @@ vector<string> Graph::printBoardingPass(string &filter, Flight* thisFlight) {
         cout << "Date: " << thisFlight->month << ", " << thisFlight->date << endl;
         cout << "Departure Time:" << thisFlight->time << endl;
         cout << "Time of Travel:" << thisFlight->duration;
-        if (thisFlight->duration = 1)
+        if (thisFlight->duration == "1")
           cout << " hour" << endl;
         else 
           cout << " hours" << endl;
         cout << "Distance of Travel:" << thisFlight->distance << " miles" << endl;
         cout << "Time Zone Difference:" << thisFlight->timeDiff;
-         if (thisFlight->timeDiff = 1)
+         if (thisFlight->timeDiff == "1")
           cout << " hour" << endl << endl;
         else 
           cout << " hours" << endl << endl;
