@@ -152,6 +152,8 @@ vector<string> Graph::path(string &origin, string &dest) {      //bfs to see if 
         return final;       //return two cities
     }
 
+    final.push_back("NA");
+
     while (!q.empty()) {        //while the queue is not empty
         string current = q.front();
         q.pop();
@@ -231,7 +233,7 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
             cout << "No boarding pass to print. " << endl;
             cout << "One suggested path found between " << origin << " and " << dest << " is: " << endl;
 
-            for (int i = 0; i < cities.size(); i++) {
+            for (int i = 1; i < cities.size(); i++) {
                 cout << i+1 << ". " << cities.at(i) << endl;
             }
             cout << endl;
