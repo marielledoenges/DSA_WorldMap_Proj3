@@ -543,3 +543,112 @@ void TicketScreen::drawBoardingPass(const Flight flight) {
 //        drawBoardingPass(selectedFlight); // Draw the selected flight's boarding pass
 //    }
 //}
+
+
+/*
+
+
+// Entry point for the ticket booking system's main functionality.
+void Ticket::run() {
+    // Initialize the main window of the application with a specific size and title.
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Flight Ticket Booking", sf::Style::Close);
+
+    // Load the font from a file to ensure that all text rendered in the application uses this font.
+    loadFont("arial.ttf");
+
+    // Retrieve a list of available flights from data source.
+    std::vector<Flight> availableFlights = ();
+
+    // Check if the flight data is available. If not, log an error message and exit the function.
+    if (availableFlights.empty()) {
+        std::cerr << "No flights available at this time." << std::endl;
+        return; // Early exit if no flights are available to display
+    }
+
+    // Variables for managing the state of selected flight.
+    Flight selectedFlight;  // This variable will hold the details of the selected flight.
+    int selectedIndex = -1; // This variable tracks the index of the selected flight in the vector.
+
+    // Setup the header text at the top of the window to instruct the user.
+    sf::Text header("Select a Flight:", font, 24);
+    header.setPosition(50, 20);
+    header.setFillColor(sf::Color::Black);
+
+    // Create a vector to store the text elements for flight options displayed on the screen.
+    std::vector<sf::Text> flightOptions;
+    for (size_t i = 0; i < availableFlights.size(); i++) {
+        
+        //need helo w  formatted flight info string
+        sf::Text option(availableFlights[i].(), font, 20); 
+        option.setPosition(50, 70 + i * 30);
+        option.setFillColor(sf::Color::Blue); // Initial color for unselected options.
+        flightOptions.push_back(option);
+    }
+
+    // Set up a back button that allows the user to exit or go back to the previous menu.
+    sf::Text backButton("Back", font, 20);
+    backButton.setPosition(700, 550);
+    backButton.setFillColor(sf::Color::Red);
+
+    // Main event loop that runs as long as the window is open.
+    while (window.isOpen()) {
+        sf::Event event;
+        // Poll for and process events.
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close(); // Close the window if the close event is triggered.
+            }
+
+            // Check for mouse movements to update hover effects on the flight options.
+            if (event.type == sf::Event::MouseMoved) {
+                for (auto& option : flightOptions) {
+                    // Change color to a lighter shade when the mouse hovers over an option.
+                    if (option.getGlobalBounds().contains(event.mouseMove.x, event.mouseMove.y)) {
+                        option.setFillColor(sf::Color(100, 100, 255));
+                    } else {
+                        option.setFillColor(sf::Color::Blue); // Reset color when not hovered.
+                    }
+                }
+            }
+
+            // Handle mouse button presses to select a flight option.
+            if (event.type == sf::Event::MouseButtonPressed) {
+                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+                // Check if the back button is pressed.
+                if (backButton.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                    window.close(); // Close the window on back button click.
+                    return;
+                }
+
+                // Determine which flight option was clicked.
+                for (int i = 0; i < flightOptions.size(); i++) {
+                    if (flightOptions[i].getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        selectedIndex = i; // Update the selected index.
+                        selectedFlight = availableFlights[i]; // Update the selected flight.
+                        // Highlight the selected option by changing its color to green.
+                        flightOptions[i].setFillColor(sf::Color::Green);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Clear the window and redraw all components.
+        window.clear(sf::Color::White);
+        window.draw(header);
+        for (auto& option : flightOptions) {
+            window.draw(option);
+        }
+        window.draw(backButton);
+
+        // If a flight is selected, display its boarding pass.
+        if (selectedIndex != -1) {
+            drawBoardingPass(selectedFlight);
+        }
+
+        // Display the updated window contents.
+        window.display();
+    }
+}
+
+*/
