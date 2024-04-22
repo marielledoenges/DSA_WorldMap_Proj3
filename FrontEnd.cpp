@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <fstream>
 #include <sstream>
+#include "graph.h"
+#include <vector>
 using namespace std;
 
 
@@ -387,24 +389,43 @@ void MapScreen::displayWindow() {
                 }else if(selectAnother.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
                     interaction = "click second";
                 }else if(cheapDirect.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    filter = "Cheapest Direct Flight";
+                    dest = "";
+                    otherInfo = "";
+                    vector<string> final = getBest(filter, origin, dest, otherInfo);
 
+                }else if(cheapIntl.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    filter = "Cheapest International Flight";
+                    dest = "";
+                    otherInfo = "";
+                    vector<string> final = getBest(filter, origin, dest, otherInfo);
 
                 }else if(cheapInMonth.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
-
-
-                }else if(cheapInMonth.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
-
+                    filter = "Month";
+                    dest = "";
+                    otherInfo = ""; //FIXME and change to month input
+                    vector<string> final = getBest(filter, origin, dest, otherInfo);
 
                 }else if(minWBudget.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
-
+                    //something else for budget input
+                    filter = "Minimum Num Cities";
+                    dest = "";
+                    otherInfo = ""; //FIXME and put budget
+                    vector<string> final = getBest(filter, origin, dest, otherInfo);
 
                 }else if(checkDirect.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    filter = "Direct";
+                    otherInfo = "";
+                    vector<string> final = getBest(filter, origin, dest, otherInfo);
 
-
-                }else if(getPass.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
-
+                }else if(getPass.getGlobalBounds().contains(window.mapPixelToCoords(mouse))) {
+                    filter = "Flight path";
+                    otherInfo = "";
+                    vector<string> final = getBest(filter, origin, dest, otherInfo);
+                    //FIXME AND PASS FINAL VECTOR INTO BOARDING PASS WINDOW
 
                 }
+
 
                 else{
 
