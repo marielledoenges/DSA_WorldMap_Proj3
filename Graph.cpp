@@ -218,6 +218,7 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
     }
     else if(filter == "Flight path") {
         vector<string> cities = path(origin,dest);
+        vector<string> nbp;
 
         if (cities.size() == 0) {
             cout << "No path exists between " << origin << " and " << dest << ". " << endl;
@@ -231,11 +232,13 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
         else {
             cout << "No boarding pass to print. " << endl;
             cout << "One suggested path found between " << origin << " and " << dest << " is: " << endl;
+            nbp.push_back("NA");
 
             for (int i = 0; i < cities.size(); i++) {
                 cout << i+1 << ". " << cities.at(i) << endl;
+                nbp.push_back(cities.at(i));
             }
-            return cities;
+            return nbp;
         }
     }
     else if (filter == "Month") {
@@ -256,7 +259,7 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
         }
 
         else {
-            cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to for ";
+            cout << "Starting at " << origin << " the minimum number of cities \nyou can consecutively fly to for ";
             cout << otherInfo << " is: " << endl;
             temp.append("Starting at ");
             temp.append(origin);
@@ -437,4 +440,3 @@ void Graph::readCSVFile(string filename){
         createMap(cityFrom, countryFrom, cityTo, countryTo, price, distance, duration, timeDiff, month, date, depTime, intl, flightNum);
     }
 }
-
