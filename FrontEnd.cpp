@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <fstream>
 #include <sstream>
-#include "graph.h"
+#include "Graph.h"
 #include <vector>
 using namespace std;
 
@@ -159,6 +159,7 @@ MapScreen::MapScreen() {
 
     font.loadFromFile("arial.ttf");
 
+    //map movement buttons
     zoomInT.loadFromFile("images/zoom_in.jpg");
     zoomIn.setTexture(zoomInT);
     zoomIn.setPosition(40, 300);
@@ -183,15 +184,11 @@ MapScreen::MapScreen() {
     left.setTexture(LT);
     left.setPosition(25, 585);
 
+    //pin set up
     pinT.loadFromFile("images/red_pin.png");
     loadPins();
 
-    promptT.loadFromFile("images/prompt.jpg");
-    promptBorder.setTexture(promptT);
-    promptBorder.setPosition(1250, 550);
-    promptBorder.setScale(1.5, 0.8);
-
-
+    //input / selection validation
     yesT.loadFromFile("images/check.jpg");
     yes.setTexture(yesT);
     yes.setPosition(1250,640);
@@ -200,6 +197,7 @@ MapScreen::MapScreen() {
     no.setTexture(noT);
     no.setPosition(1300, 640);
 
+    //interaction commands
     select1.setString("Click on a city (origin city).");
     select1.setFillColor(sf::Color::Black);
     select1.setStyle(sf::Text::Bold);
@@ -228,6 +226,7 @@ MapScreen::MapScreen() {
     optionList.setCharacterSize(25);
     setTextRight(optionList, 1360, 530);
 
+    //otions if one flight selected
     selectAnother.setString("Select a destination");
     selectAnother.setFillColor(sf::Color::Black);
     selectAnother.setStyle(sf::Text::Bold);
@@ -240,29 +239,30 @@ MapScreen::MapScreen() {
     cheapDirect.setStyle(sf::Text::Bold);
     cheapDirect.setFont(font);
     cheapDirect.setCharacterSize(25);
-    setTextRight(cheapDirect, 1450, 570);
+    setTextRight(cheapDirect, 0, 0);
 
     cheapIntl.setString("Find the cheapest international flight from here");
     cheapIntl.setFillColor(sf::Color::Black);
     cheapIntl.setStyle(sf::Text::Bold);
     cheapIntl.setFont(font);
     cheapIntl.setCharacterSize(25);
-    setTextRight(cheapIntl, 1450, 600);
+
 
     cheapInMonth.setString("Find the cheapest flight in a month of your choice from here");
     cheapInMonth.setFillColor(sf::Color::Black);
     cheapInMonth.setStyle(sf::Text::Bold);
     cheapInMonth.setFont(font);
     cheapInMonth.setCharacterSize(25);
-    setTextRight(cheapInMonth, 1450, 630);
+
 
     minWBudget.setString("Find the minimum number of cities you can travel to within a certain budget from here.");
     minWBudget.setFillColor(sf::Color::Black);
     minWBudget.setStyle(sf::Text::Bold);
     minWBudget.setFont(font);
     minWBudget.setCharacterSize(25);
-    setTextRight(minWBudget, 1450, 660);
 
+
+    //options if two flights selected
     checkDirect.setString("Check for a direct flight between:");
     checkDirect.setFillColor(sf::Color::Black);
     checkDirect.setStyle(sf::Text::Bold);
@@ -277,25 +277,177 @@ MapScreen::MapScreen() {
     getPass.setCharacterSize(25);
     setTextRight(getPass, 1450, 570);
 
+    //restart
+    restart.setString("RESTART");
+    restart.setFillColor(sf::Color::Red);
+    restart.setStyle(sf::Text::Bold);
+    restart.setFont(font);
+    restart.setCharacterSize(25);
+    setTextRight(restart, 155, 480);
 
+    restartT.loadFromFile("images/prompt.jpg");
+    restartBorder.setTexture(restartT);
+    restartBorder.setPosition(30, 450);
+    restartBorder.setScale(0.9, 0.6);
+
+//    sf::Text plus100, plus500, plus1000, minus100, minus500, minus1000 budget, budgetPrompt;
+//    sf::Text monthPrompt, potentialMonth, next, prev;
+
+    //budget input
+    plus100.setString("+100");
+    plus100.setFont(font);
+    plus100.setCharacterSize(25);
+    plus100.setFillColor(sf::Color::Black);
+    plus100.setStyle(sf::Text::Bold);
+
+    plus500.setString("+500");
+    plus500.setFont(font);
+    plus500.setCharacterSize(25);
+    plus500.setFillColor(sf::Color::Black);
+    plus500.setStyle(sf::Text::Bold);
+
+    plus1000.setString("+1000");
+    plus1000.setFont(font);
+    plus1000.setCharacterSize(25);
+    plus1000.setFillColor(sf::Color::Black);
+    plus1000.setStyle(sf::Text::Bold);
+
+    minus100.setString("-100");
+    minus100.setFont(font);
+    minus100.setCharacterSize(25);
+    minus100.setFillColor(sf::Color::Black);
+    minus100.setStyle(sf::Text::Bold);
+
+    minus500.setString("-500");
+    minus500.setFont(font);
+    minus500.setCharacterSize(25);
+    minus500.setFillColor(sf::Color::Black);
+    minus500.setStyle(sf::Text::Bold);
+
+    minus1000.setString("-1000");
+    minus1000.setFont(font);
+    minus1000.setCharacterSize(25);
+    minus1000.setFillColor(sf::Color::Black);
+    minus1000.setStyle(sf::Text::Bold);
+
+    budget.setString("1500");
+    budget.setFont(font);
+    budget.setCharacterSize(25);
+    budget.setFillColor(sf::Color::Black);
+    budget.setStyle(sf::Text::Bold);
+
+    budgetPrompt.setString("Select your budget:  $");
+    budgetPrompt.setFont(font);
+    budgetPrompt.setCharacterSize(25);
+    budgetPrompt.setFillColor(sf::Color::Black);
+    budgetPrompt.setStyle(sf::Text::Bold);
+
+    monthPrompt.setString("Select your month to travel in: ");
+    monthPrompt.setFont(font);
+    monthPrompt.setCharacterSize(25);
+    monthPrompt.setFillColor(sf::Color::Black);
+    monthPrompt.setStyle(sf::Text::Bold);
+
+    potentialMonth.setString(months[0]);
+    potentialMonth.setFont(font);
+    potentialMonth.setCharacterSize(25);
+    potentialMonth.setFillColor(sf::Color::Black);
+    potentialMonth.setStyle(sf::Text::Bold);
+
+    next.setString("next month");
+    next.setFont(font);
+    next.setCharacterSize(25);
+    next.setFillColor(sf::Color::Black);
+    next.setStyle(sf::Text::Bold);
+
+    prev.setString("previous month");
+    prev.setFont(font);
+    prev.setCharacterSize(25);
+    prev.setFillColor(sf::Color::Black);
+    prev.setStyle(sf::Text::Bold);
+
+}
+void MapScreen::moveAllPrompts() {
+    setTextRight(select1, 0,0);
+    setTextRight(youSelected, 0,0);
+    setTextRight(optionList, 0,0);
+    setTextRight(selectAnother, 0,0);
+    setTextRight(select2, 0,0);
+    setTextRight(cheapDirect, 0,0);
+    setTextRight(cheapIntl, 0,0);
+    setTextRight(cheapInMonth, 0,0);
+    setTextRight(minWBudget, 0,0);
+    setTextRight(checkDirect, 0,0);
+    setTextRight(getPass, 0,0);
+    setTextRight(plus100, 0,0);
+    setTextRight(plus500, 0,0);
+    setTextRight(plus1000, 0,0);
+    setTextRight(minus100, 0,0);
+    setTextRight(minus500, 0,0);
+    setTextRight(minus1000, 0,0);
+    setTextRight(budget, 0,0);
+    setTextRight(budgetPrompt, 0,0);
+    setTextRight(monthPrompt, 0,0);
+    setTextRight(potentialMonth, 0,0);
+    setTextRight(next, 0,0);
+    setTextRight(prev, 0,0);
+}
+
+void MapScreen::moveTextLocation(string interaction){
+    if(interaction == "0"){
+        setTextRight(select1, 1450, 600);
+    }else if(interaction == "confirm1" || interaction == "confirm2"){
+        setTextRight(youSelected, 1450, 600);
+        yes.setPosition(1250,640);
+        no.setPosition(1300, 640);
+    }else if(interaction == "1"){
+        setTextRight(optionList, 1450, 500);
+        setTextRight(selectAnother, 1450, 540);
+        setTextRight(cheapDirect, 1450, 570);
+        setTextRight(cheapIntl, 1450, 600);
+        setTextRight(cheapInMonth, 1450, 630);
+        setTextRight(minWBudget, 1450, 660);
+    }
+    else if(interaction == "2"){
+        setTextRight(optionList, 1450, 500);
+        setTextRight(checkDirect, 1450, 540);
+        setTextRight(getPass, 1450, 570);
+
+    }else if(interaction == "click second"){
+        setTextRight(select2, 1450, 600);
+    }else if(interaction == "create budget"){
+        plus100.setPosition(1200, 600);
+        plus500.setPosition(1300, 600);
+        plus1000.setPosition(1400, 600);
+        minus100.setPosition(1200, 650);
+        minus500.setPosition(1300, 650);
+        minus1000.setPosition(1400, 650);
+        budget.setPosition(1300, 550);
+        budgetPrompt.setPosition(1240, 555);
+        yes.setPosition(1350,530);
+    }else if(interaction == "select month"){
+        monthPrompt.setPosition(1200, 555);
+        potentialMonth.setPosition(1350, 555);
+        next.setPosition(1380, 590);
+        prev.setPosition(1380, 630);
+        yes.setPosition(1400,530);
+    }
 }
 
 void MapScreen::putPromptsToScreen(sf::RenderWindow &window, string interactionStatus) {
-    string toWrite = "";
+    moveAllPrompts();
+    moveTextLocation(interactionStatus);
+
     if(interactionStatus == "0"){
-        setTextRight(select1, 1450, 600);
         window.draw(select1);
 
-    } else if(interactionStatus == "confirm1" || interactionStatus == "confirm2"){
-        toWrite = "Confirm your selection of: " + placeHold;
-        youSelected.setString(toWrite);
-        setTextRight(youSelected, 1450, 600);
+    }else if(interactionStatus == "confirm1" || interactionStatus == "confirm2"){
+        youSelected.setString("Confirm your selection of: " + placeHold);
         window.draw(youSelected);
         window.draw(yes);
         window.draw(no);
 
     }else if(interactionStatus == "1"){
-        setTextRight(optionList, 1450, 500);
         window.draw(optionList);
         window.draw(selectAnother);
         window.draw(cheapDirect);
@@ -304,23 +456,39 @@ void MapScreen::putPromptsToScreen(sf::RenderWindow &window, string interactionS
         window.draw(minWBudget);
 
     }else if(interactionStatus == "2"){
-        setTextRight(optionList, 1450, 500);
-        window.draw(optionList);
         checkDirect.setString("Check for a direct flight between: " + origin + " and " + dest);
-        setTextRight(checkDirect, 1450, 540);
-        window.draw(checkDirect);
-
         getPass.setString("Print my boarding pass for: " + origin + " to " + dest);
-        setTextRight(getPass, 1450, 570);
+
+        window.draw(optionList);
+        window.draw(checkDirect);
         window.draw(getPass);
+
     }else if(interactionStatus == "click second"){
-        setTextRight(select2, 1450, 600);
         window.draw(select2);
 
+    }else if(interactionStatus == "create budget"){
+        window.draw(plus100);
+        window.draw(plus500);
+        window.draw(plus1000);
+        window.draw(minus100);
+        window.draw(minus500);
+        window.draw(minus1000);
+        window.draw(budget);
+        window.draw(budgetPrompt);
+        window.draw(yes);
+
+    }else if(interactionStatus == "select month"){
+        window.draw(monthPrompt);
+        window.draw(potentialMonth);
+        window.draw(next);
+        window.draw(prev);
+        window.draw(yes);
     }
 }
 
 void MapScreen::displayWindow() {
+    Graph backEnd;
+    backEnd.readCSVFile("proj3DataTest.csv");
     sf::RenderWindow window(sf::VideoMode(1494,700), "testing", sf::Style::Close);
 
     mapView.setCenter(window.getSize().x/2,window.getSize().y/2);
@@ -332,6 +500,7 @@ void MapScreen::displayWindow() {
 
 
     string interaction = "0";
+    int monthIdx = 0;
 
     while(window.isOpen()) {
         sf::Event event;
@@ -344,6 +513,8 @@ void MapScreen::displayWindow() {
                 mouse = sf::Mouse::getPosition(window);
                 int clickX = mouse.x;
                 int clickY = mouse.y;
+
+                cout << clickX << ", " << clickY << endl;
                 if(zoomIn.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
                     if(zIn < 12){
                         mapView.setSize(mapView.getSize().x - 100, mapView.getSize().y - 46.85);
@@ -379,6 +550,16 @@ void MapScreen::displayWindow() {
                     }else if(interaction == "confirm2"){
                         interaction = "2";
                         dest = placeHold;
+                    }else if(interaction == "select month"){
+                        filter = "Month";
+                        dest = "";
+                        otherInfo = potentialMonth.getString();
+                        vector<string> final = backEnd.getBest(filter, origin, dest, otherInfo);
+                    }else if(interaction == "create budget"){
+                        filter = "Minimum Num Cities";
+                        dest = "";
+                        otherInfo = budget.getString();
+                        vector<string> final = backEnd.getBest(filter, origin, dest, otherInfo);
                     }
                 }else if(no.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
                     if(interaction == "confirm1"){
@@ -392,40 +573,77 @@ void MapScreen::displayWindow() {
                     filter = "Cheapest Direct Flight";
                     dest = "";
                     otherInfo = "";
-                    vector<string> final = getBest(filter, origin, dest, otherInfo);
+                    vector<string> final = backEnd.getBest(filter, origin, dest, otherInfo);
 
                 }else if(cheapIntl.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
                     filter = "Cheapest International Flight";
                     dest = "";
                     otherInfo = "";
-                    vector<string> final = getBest(filter, origin, dest, otherInfo);
+                    vector<string> final = backEnd.getBest(filter, origin, dest, otherInfo);
 
                 }else if(cheapInMonth.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
-                    filter = "Month";
-                    dest = "";
-                    otherInfo = ""; //FIXME and change to month input
-                    vector<string> final = getBest(filter, origin, dest, otherInfo);
-
+                    interaction = "select month";
                 }else if(minWBudget.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
                     //something else for budget input
-                    filter = "Minimum Num Cities";
-                    dest = "";
-                    otherInfo = ""; //FIXME and put budget
-                    vector<string> final = getBest(filter, origin, dest, otherInfo);
-
+                    interaction = "create budget";
                 }else if(checkDirect.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
                     filter = "Direct";
                     otherInfo = "";
-                    vector<string> final = getBest(filter, origin, dest, otherInfo);
+                    vector<string> final = backEnd.getBest(filter, origin, dest, otherInfo);
 
                 }else if(getPass.getGlobalBounds().contains(window.mapPixelToCoords(mouse))) {
                     filter = "Flight path";
                     otherInfo = "";
-                    vector<string> final = getBest(filter, origin, dest, otherInfo);
+                    vector<string> final = backEnd.getBest(filter, origin, dest, otherInfo);
                     //FIXME AND PASS FINAL VECTOR INTO BOARDING PASS WINDOW
 
-                }
+                    cout << endl << endl;
+                    for(auto item : final){
+                        cout << item << ", ";
+                    }
 
+                }else if(restartBorder.getGlobalBounds().contains(window.mapPixelToCoords(mouse))) {
+                    interaction = "0";
+                    origin = "";
+                    dest = "";
+                    budget.setString("1500");
+                }else if(next.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    monthIdx += 1;
+                    if(monthIdx == 12){
+                        monthIdx = 0;
+                    }
+                    potentialMonth.setString(months[monthIdx]);
+                }else if(prev.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    monthIdx -= 1;
+                    if(monthIdx == -1){
+                        monthIdx = 11;
+                    }
+                    potentialMonth.setString(months[monthIdx]);
+                }else if(plus100.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    string temp = budget.getString();
+                    int newBud = stoi(temp) + 100;
+                    budget.setString(to_string(newBud));
+                }else if(plus500.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    string temp = budget.getString();
+                    int newBud = stoi(temp) + 500;
+                    budget.setString(to_string(newBud));
+                }else if(plus1000.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    string temp = budget.getString();
+                    int newBud = stoi(temp) + 1000;
+                    budget.setString(to_string(newBud));
+                }else if(minus100.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    string temp = budget.getString();
+                    int newBud = stoi(temp) - 100;
+                    budget.setString(to_string(newBud));
+                }else if(minus500.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    string temp = budget.getString();
+                    int newBud = stoi(temp) - 500;
+                    budget.setString(to_string(newBud));
+                }else if(minus1000.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    string temp = budget.getString();
+                    int newBud = stoi(temp) - 1000;
+                    budget.setString(to_string(newBud));
+                }
 
                 else{
 
@@ -459,7 +677,8 @@ void MapScreen::displayWindow() {
         window.draw(down);
         window.draw(left);
         window.draw(right);
-        //window.draw(promptBorder);
+        window.draw(restartBorder);
+        window.draw(restart);
         putPromptsToScreen(window, interaction);
         //window.draw(select1);
 
@@ -469,95 +688,27 @@ void MapScreen::displayWindow() {
     }
 }
 
-
-
-void TicketScreen::loadFont(const std::string& fontPath) {
-    if (!font.loadFromFile(fontPath)) {
-        std::cerr << "Could not load font at: " << fontPath << std::endl;
-        exit(EXIT_FAILURE);
+Ticket::Ticket(vector<std::string> yourInformation) {
+    originCity.setFont(font);
+    if(yourInformation.size() == 0){
+        name.setString("No boarding pass available");
+    }else{
+        originCity.setString(yourInformation[0]);
+        originCountry.setString(yourInformation[1]);
     }
 }
 
-void TicketScreen::drawBoardingPass(const Flight flight) {
-    // Clear previous content
-    window.clear(backgroundColor);
-
-
-    // Draw the boarding pass background
-    sf::RectangleShape passBackground(sf::Vector2f(600, 300));
-    passBackground.setPosition(100, 150);
-    passBackground.setFillColor(sf::Color(230, 230, 250)); // Light shade for the boarding pass
-    passBackground.setOutlineThickness(2);
-    passBackground.setOutlineColor(outlineColor);
-    window.draw(passBackground);
-
-    // Set up text elements on the boarding pass
-    sf::Text text;
-    text.setFont(font);
-    text.setCharacterSize(20);
-    text.setFillColor(textColor);
-
-    // Display flight number
-    text.setString("Flight Number: " + flight.flightNumber);
-    text.setPosition(120, 160);
-    window.draw(text);
-
-    // Display origin and destination
-    text.setString("From: " + flight.originCity + " To: " + flight.destinationCity);
-    text.setPosition(120, 200);
-    window.draw(text);
-
-    // Display departure time
-    text.setString("Departure: " + flight.time);
-    text.setPosition(120, 240);
-    window.draw(text);
-
-    // Display distance and duration
-    text.setString("Distance: " + std::to_string(flight.distance) + " miles, Duration: " + std::to_string(flight.duration) + " hours");
-    text.setPosition(120, 280);
-    window.draw(text);
-
-    // Display price
-    text.setString("Price: $" + std::to_string(flight.price));
-    text.setPosition(120, 320);
-    window.draw(text);
-    // Display the window content
-    window.display();
-}
-
-//void Ticket::run() {
-//    std::vector<Flight> availableFlights = {
-//            // Flight fetching logic
-//    };
-//    Flight selectedFlight;
-//    while(window.isOpen()) {
-//        sf::Event event;
-//        while (window.pollEvent(event)) {
-//            if (event.type == sf::Event::Closed) {
-//                window.close();
-//            }
-//        }
-//
-//
-//        handleUserInput(availableFlights, selectedFlight); // Allow the user to select a flight
-//        drawBoardingPass(selectedFlight); // Draw the selected flight's boarding pass
-//    }
-//}
-
-
-/*
-
-
-// Entry point for the ticket booking system's main functionality.
 void Ticket::run() {
     // Initialize the main window of the application with a specific size and title.
     sf::RenderWindow window(sf::VideoMode(800, 600), "Flight Ticket Booking", sf::Style::Close);
 
     // Load the font from a file to ensure that all text rendered in the application uses this font.
     loadFont("arial.ttf");
+    name.setString("Marielle, Eneida and Maggie");
+    name.setFont(font);
 
     // Retrieve a list of available flights from data source.
-    std::vector<Flight> availableFlights = ();
+    std::vector<Flight> availableFlights;
 
     // Check if the flight data is available. If not, log an error message and exit the function.
     if (availableFlights.empty()) {
@@ -577,9 +728,9 @@ void Ticket::run() {
     // Create a vector to store the text elements for flight options displayed on the screen.
     std::vector<sf::Text> flightOptions;
     for (size_t i = 0; i < availableFlights.size(); i++) {
-        
+
         //need helo w  formatted flight info string
-        sf::Text option(availableFlights[i].(), font, 20); 
+        sf::Text option(availableFlights[i].(), font, 20);
         option.setPosition(50, 70 + i * 30);
         option.setFillColor(sf::Color::Blue); // Initial color for unselected options.
         flightOptions.push_back(option);
@@ -636,6 +787,7 @@ void Ticket::run() {
         // Clear the window and redraw all components.
         window.clear(sf::Color::White);
         window.draw(header);
+        window.draw(name);
         for (auto& option : flightOptions) {
             window.draw(option);
         }
@@ -651,4 +803,3 @@ void Ticket::run() {
     }
 }
 
-*/
