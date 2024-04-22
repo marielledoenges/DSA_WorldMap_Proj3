@@ -40,8 +40,8 @@ Flight* Graph::cheapestDirect(string &origin) {
                 cheapestPair = g[n(origin)][i];     //set our cheapest pair to this flight
             }
         }
-        return cheapestPair;        //return the cheapest direct flight
     }
+    return cheapestPair;        //return the cheapest direct flight
 }
 
 Flight* Graph::cheapestIntl(string &origin) {
@@ -56,6 +56,7 @@ Flight* Graph::cheapestIntl(string &origin) {
             price = temp->price;
 
             if(price < min && temp->intl) {     //if it's less than our current minimum price and is an international flight
+                min = price;
                 final = temp;       //set our final flight equal to our temp pointer
             }
         }
