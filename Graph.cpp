@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <unordered_set>
+#include <unordered_map>
 #include <queue>
 
 
@@ -19,6 +20,9 @@ void Graph::createMap(string cityFrom, string countryFrom, string cityTo, string
     if (international == "no") {
         intl = false;
     }
+
+    cityCountry[cityFrom] = countryFrom;
+    cityCountry[cityTo] = countryTo;
 
     //create new flight
     this->current = new Flight(cityFrom, countryFrom, cityTo, countryTo, priceNum, distanceNum, dur, tz, month, date, departureTime, intl, flightNum);
@@ -91,7 +95,13 @@ Flight* Graph::flightMonth(string &origin, string &month) {
 }
 
 bool Graph::international(string &origin, string &dest) {
-    return g[n(origin)][n(dest)]->intl;
+    string countryOne = getCountry(origin);
+    string countryTwo = getCountry(dest);
+
+    if (countryOne == countryTwo) {     //if the cities give different countries then it is international
+        return true;
+    }
+    return false;
 }
 
 vector<string> Graph::minCity(string &origin, int &budget) {        //use a bfs to get the minimum number of cities we can visit with our budget
@@ -312,5 +322,9 @@ void Graph::readCSVFile(string filename){
 
 int Graph::n(string city) {
     return cityNamesMap[city];
+}
+
+string Graph::getCountry(string &city) {
+    return cityCountry[city];
 }
 
