@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Graph.h"
+#include "FrontEnd.h"
 #include <string>
 #include <unordered_set>
 #include <unordered_map>
@@ -283,9 +284,9 @@ vector<string> Graph::printBoardingPass(string &filter, Flight* thisFlight) {
         cout << "Flight number: " << thisFlight->flightNumber << endl;
         cout << "Origin: " << thisFlight->originCity << " ," << thisFlight->originCountry <<  endl;
         cout << "Destination: " << thisFlight->destinationCity << " ," << thisFlight->destCountry <<  endl << endl;
-        cout << "Date: " << thisFlight->date << endl;
+        cout << "Date: " << thisFlight->month << ", " << thisFlight->date << endl;
         cout << "Departure Time: " << thisFlight->time << endl;
-        cout << "Time of Travel: " << thisFlight->duration << endl;
+        cout << "Time of Travel: " << thisFlight->duration << " hours." << endl;
         cout << "Distance of Travel: " << thisFlight->distance << endl;
         cout << "Time Zone Difference: " << thisFlight->timeDiff << endl << endl;
         cout << "The Price for This Flight is: " << thisFlight->price << endl << endl;
@@ -330,7 +331,7 @@ void Graph::readCSVFile(string filename){
         getline(ss, flightNum);
 
         //create a flight object with these details
-        createMap(cityFrom, countryFrom, cityTo, countryFrom, price, distance, duration, timeDiff, month, date, depTime, intl, flightNum);
+        createMap(cityFrom, countryFrom, cityTo, countryTo, price, distance, duration, timeDiff, month, date, depTime, intl, flightNum);
     }
 }
 
