@@ -8,7 +8,15 @@
 using namespace std;
 
 
+/*
+This function is responsible for displaying the welcome screen of the Travel App using the SFML library. 
+It sets up a window, loads necessary fonts and images (specifically a background image and the Arial font), 
+and configures text and button elements with appropriate styles and positions. The function includes an interactive 
+environment where it handles events such as mouse movement and clicks, checking if the mouse is over specific buttons 
+and reacting to button presses to navigate to other parts of the app or exit. It also includes an animation feature 
+with a circle that grows and shrinks continuously, adding a dynamic visual element to the welcome screen.
 
+*/
 
 
 string WelcomeScreen::showWelcomeScreen() {
@@ -40,14 +48,6 @@ string WelcomeScreen::showWelcomeScreen() {
     mapButtonText.setFillColor(sf::Color::White);
     mapButtonText.setPosition(285, 165);
 
-    /*
-    sf::RectangleShape passButton(sf::Vector2f(250, 70));
-    passButton.setPosition(275, 250);
-    passButton.setFillColor(sf::Color(102, 204, 0, 150)); // Semi-transparent green
-    sf::Text passButtonText("View Boarding Pass", font, 25);
-    passButtonText.setFillColor(sf::Color::White);
-    passButtonText.setPosition(285, 265);
-*/
 
     // Add an animation or effect
     sf::CircleShape animationCircle(40);
@@ -115,6 +115,13 @@ string WelcomeScreen::showWelcomeScreen() {
     }
 }
 
+
+/*
+Populate the map with location pins from a CSV file containing city coordinates. 
+It opens the file, reads coordinates line by line, and creates a sprite for each set of 
+coordinates using a preloaded pin image. These sprites are then stored in the cityPts vector 
+for later use in rendering on the map
+*/
 void MapScreen::loadPins() {
     ifstream file;
     file.open("cityCoordinates.csv");
