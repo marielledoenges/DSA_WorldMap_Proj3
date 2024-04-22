@@ -40,12 +40,16 @@ string WelcomeScreen::showWelcomeScreen() {
     mapButtonText.setFillColor(sf::Color::White);
     mapButtonText.setPosition(285, 165);
 
+    /*
+
     sf::RectangleShape passButton(sf::Vector2f(250, 70));
     passButton.setPosition(275, 250);
     passButton.setFillColor(sf::Color(102, 204, 0, 150)); // Semi-transparent green
     sf::Text passButtonText("View Boarding Pass", font, 25);
     passButtonText.setFillColor(sf::Color::White);
     passButtonText.setPosition(285, 265);
+
+*/
 
     // Add an animation or effect
     sf::CircleShape animationCircle(40);
