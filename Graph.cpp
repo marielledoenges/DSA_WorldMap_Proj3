@@ -282,15 +282,15 @@ vector<string> Graph::printBoardingPass(string &filter, Flight* thisFlight) {
         // print out all relevant graph info by accessing the graph from map
         //thinking sfml can print this out on ticket
         cout << "Based on " << filter << " flight filter, the best flight(s) for you is:" << endl;
-        cout << "Flight number: " << thisFlight->flightNumber << endl;
-        cout << "Origin: " << thisFlight->originCity << " ," << thisFlight->originCountry <<  endl;
-        cout << "Destination: " << thisFlight->destinationCity << " ," << thisFlight->destCountry <<  endl << endl;
+        cout << "Flight number:" << thisFlight->flightNumber << endl;
+        cout << "Origin:" << thisFlight->originCity << " ," << thisFlight->originCountry <<  endl;
+        cout << "Destination:" << thisFlight->destinationCity << " ," << thisFlight->destCountry <<  endl << endl;
         cout << "Date: " << thisFlight->month << ", " << thisFlight->date << endl;
-        cout << "Departure Time: " << thisFlight->time << endl;
-        cout << "Time of Travel: " << thisFlight->duration << " hours." << endl;
-        cout << "Distance of Travel: " << thisFlight->distance << endl;
-        cout << "Time Zone Difference: " << thisFlight->timeDiff << endl << endl;
-        cout << "The Price for This Flight is: " << thisFlight->price << endl << endl;
+        cout << "Departure Time:" << thisFlight->time << endl;
+        cout << "Time of Travel:" << thisFlight->duration << " hours" << endl;
+        cout << "Distance of Travel:" << thisFlight->distance << " miles" << endl;
+        cout << "Time Zone Difference:" << thisFlight->timeDiff << " hours" << endl << endl;
+        cout << "The Price for This Flight is:$" << thisFlight->price << endl << endl;
 
         final.push_back(thisFlight->flightNumber);      //push back all flight info into a vector so window of printing boarding pass can be easily achieved
         final.push_back(thisFlight->originCity);
