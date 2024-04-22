@@ -70,6 +70,7 @@ private:
     Flight* directExists(string &origin, string &dest);        //returns flightNum if a direct graph exists between two cities
     Flight* flightMonth(string &origin, string  &month);        //returns the flight number of cheapest flight in a given month, returns empty if no flight exists
     vector<string> minCity(string &origin, int &budget);        //cheapest way to get between two places if possible, returns a vector of flight numbers. should be generalized
+    vector<string> path(string &origin, string &dest);      //returns a vector of cities to get between two cities if possible
     bool international(string &origin, string &dest);    //returns if the graph is international or not
 
 public:
