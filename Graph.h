@@ -7,6 +7,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <SFML/Graphics.hpp>
+#include "FrontEnd.h"
 
 using namespace std;
 
@@ -89,7 +90,7 @@ public:
                    string price,string distance, string duration, string timeZoneDiff,
                    string month, string date, string departureTime, string international, string flightNum); //creating actual map
 
-    vector<string> getBest(string& filter, string& origin, string& dest);        //returns the best flight based on the filter passed in
+    vector<string> getBest(string filter, string origin, string dest, string month);        //returns the best flight based on the filter passed in
     vector<string> printBoardingPass(string &filter, Flight* thisFlight); //prints the graph based off of filter and the best graph
     void readCSVFile(string filename);    //reads the csv file of data given and passes data to createmap function
     int n(string city);        //returns the number/position of a city in a map
