@@ -3,6 +3,7 @@
 
 
 #Flight and Travel Optimizers
+
 Welcome to the Flight and Travel Optimizers application! This tool allows users to visually compare and explore flight options from various cities, displaying flight paths and details in an interactive graphical interface powered by SFML.
 
 #Prerequisites
