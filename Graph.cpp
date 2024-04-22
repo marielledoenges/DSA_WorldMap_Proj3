@@ -272,7 +272,7 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
     return info;
 }
 
-string monthNum(string month) {
+string Graph::monthNum(string month) {
     string num = "1";
     if (month == "February") {
         num = "2";
