@@ -41,8 +41,7 @@ Now, build the project:
 make
 
 Running the Application
-After building the project, you can run the application by executing:
-./FlightApp
+After building the project, you can run the application.
 
 This command launches the application's main window, where you can interact with the map and view flight details.
 
