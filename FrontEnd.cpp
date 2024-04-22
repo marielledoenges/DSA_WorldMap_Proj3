@@ -28,8 +28,8 @@ string WelcomeScreen::showWelcomeScreen() {
     sf::Sprite background(backgroundTexture);
 
     // Setup welcome text
-    sf::Text welcomeText("Welcome! Select an Option:", font, 30);
-    welcomeText.setFillColor(sf::Color::White);
+    sf::Text welcomeText("Welcome to DSA Project 3! By Eneida Escobar, Marielle Doenges, and Maggie Snead", font, 30);
+    welcomeText.setFillColor(sf::Color::Black);
     welcomeText.setPosition(50, 50);
 
     // Style the buttons with a more geographical theme
