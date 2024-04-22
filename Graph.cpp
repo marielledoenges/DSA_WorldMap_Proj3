@@ -152,8 +152,6 @@ vector<string> Graph::path(string &origin, string &dest) {      //bfs to see if 
         return final;       //return two cities
     }
 
-    final.push_back("NA");
-
     while (!q.empty()) {        //while the queue is not empty
         string current = q.front();
         q.pop();
@@ -233,11 +231,9 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
             cout << "No boarding pass to print. " << endl;
             cout << "One suggested path found between " << origin << " and " << dest << " is: " << endl;
 
-            for (int i = 1; i < cities.size(); i++) {
+            for (int i = 0; i < cities.size(); i++) {
                 cout << i+1 << ". " << cities.at(i) << endl;
             }
-            cout << endl;
-            cout << "No Boarding Pass to Print." << endl << endl;
             return cities;
         }
     }
@@ -257,7 +253,7 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
         }
 
         else {
-            cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to for $";
+            cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to for ";
             cout << otherInfo << " is: " << endl;
             for (int i = 1; i < destinations.size(); i++) {
                 cout << "\t" << i << ". " << destinations.at(i) << endl;
@@ -276,6 +272,55 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
     return info;
 }
 
+string monthNum(string month) {
+    string num = "1";
+    if (month == "February") {
+        num = "2";
+    }
+    else if (month == "March") {
+        num = "3";
+    }
+    else if (month == "April") {
+        num = "4";
+    }
+    else if (month == "May") {
+        num = "5";
+    }
+    else if (month == "June") {
+        num = "6";
+    }
+    else if (month == "July") {
+        num = "7";
+    }
+    else if (month == "August") {
+        num = "8";
+    }
+    else if (month == "September") {
+        num = "9";
+    }
+    else if (month == "October") {
+        num = "10";
+    }
+    else if (month == "November") {
+        num = "11";
+    }
+    else if (month == "December") {
+        num = "12";
+    }
+    else {
+        return "1";
+    }
+    return num;
+}
+
+int Graph::n(string city) {
+    return cityNamesMap[city];
+}
+
+string Graph::getCountry(string &city) {
+    return cityCountry[city];
+}
+
 vector<string> Graph::printBoardingPass(string &filter, Flight* thisFlight) {
     vector<string> final;
     if (filter.empty() || thisFlight == nullptr) {       //either invalid filter, or no boarding pass to print because they just wanted info
@@ -285,31 +330,25 @@ vector<string> Graph::printBoardingPass(string &filter, Flight* thisFlight) {
     else {      //flight exists and a valid filter was passed in
         // print out all relevant graph info by accessing the graph from map
         //thinking sfml can print this out on ticket
-        cout << "Based on " << filter << " filter, the best flight for you is:" << endl;
+        cout << "Based on " << filter << " flight filter, the best flight(s) for you is:" << endl;
         cout << "Flight number:" << thisFlight->flightNumber << endl;
         cout << "Origin:" << thisFlight->originCity << " ," << thisFlight->originCountry <<  endl;
         cout << "Destination:" << thisFlight->destinationCity << " ," << thisFlight->destCountry <<  endl << endl;
         cout << "Date: " << thisFlight->month << ", " << thisFlight->date << endl;
         cout << "Departure Time:" << thisFlight->time << endl;
-        cout << "Time of Travel:" << thisFlight->duration;
-        if (thisFlight->duration == "1")
-          cout << " hour" << endl;
-        else 
-          cout << " hours" << endl;
+        cout << "Time of Travel:" << thisFlight->duration << " hours" << endl;
         cout << "Distance of Travel:" << thisFlight->distance << " miles" << endl;
-        cout << "Time Zone Difference:" << thisFlight->timeDiff;
-         if (thisFlight->timeDiff == "1")
-          cout << " hour" << endl << endl;
-        else 
-          cout << " hours" << endl << endl;
+        cout << "Time Zone Difference:" << thisFlight->timeDiff << " hours" << endl << endl;
         cout << "The Price for This Flight is:$" << thisFlight->price << endl << endl;
+
+        string numMonth = monthNum(thisFlight->month);
 
         final.push_back(thisFlight->flightNumber);      //push back all flight info into a vector so window of printing boarding pass can be easily achieved
         final.push_back(thisFlight->originCity);
         final.push_back(thisFlight->originCountry);
         final.push_back(thisFlight->destinationCity);
         final.push_back(thisFlight->destCountry);
-        final.push_back(thisFlight->month);
+        final.push_back(numMonth);
         final.push_back(thisFlight->date);
         final.push_back(thisFlight->time);
         final.push_back(thisFlight->duration);
@@ -346,13 +385,5 @@ void Graph::readCSVFile(string filename){
         //create a flight object with these details
         createMap(cityFrom, countryFrom, cityTo, countryTo, price, distance, duration, timeDiff, month, date, depTime, intl, flightNum);
     }
-}
-
-int Graph::n(string city) {
-    return cityNamesMap[city];
-}
-
-string Graph::getCountry(string &city) {
-    return cityCountry[city];
 }
 
