@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Graph.h"
 #include <string>
-#include <map>
 #include <unordered_set>
 #include <unordered_map>
 #include <queue>
@@ -11,21 +10,18 @@ void Graph::createMap(string cityFrom, string countryFrom, string cityTo, string
                       string price,string distance, string duration, string timeZoneDiff,
                       string month, string date, string departureTime, string international, string flightNum){
 
-    float tz = stof(timeZoneDiff);
-    int priceNum = stoi(price);
-    int distanceNum = stoi(distance);
-    int dur = stoi(duration);
+    int priceNum = stoi(price);     //change price to an int
     bool intl = true;
 
     if (international == "no") {
         intl = false;
     }
 
-    cityCountry[cityFrom] = countryFrom;
+    cityCountry[cityFrom] = countryFrom;        //push back cities and corresponding countries into map
     cityCountry[cityTo] = countryTo;
 
     //create new flight
-    this->current = new Flight(cityFrom, countryFrom, cityTo, countryTo, priceNum, distanceNum, dur, tz, month, date, departureTime, intl, flightNum);
+    this->current = new Flight(cityFrom, countryFrom, cityTo, countryTo, priceNum, distance, duration, timeZoneDiff, month, date, departureTime, intl, flightNum);
 
     g[n(cityFrom)][n(cityTo)] = current;    //inserting flight into matrix
 }
@@ -185,7 +181,7 @@ vector<string> Graph::path(string &origin, string &dest) {      //bfs to see if 
 }
 
 
-void Graph::getBest(string &filter, string &origin, string &dest) {
+vector<string> Graph::getBest(string &filter, string &origin, string &dest) {
     Flight* thisFlight = nullptr;
 
     if (filter == "Cheapest Direct Flight") {
@@ -267,29 +263,46 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
     }
 
     cout << endl;
-    printBoardingPass(filter, thisFlight);
-
+    vector<string> info = printBoardingPass(filter, thisFlight);
     delete thisFlight;
+
+    return info;
 }
 
-void Graph::printBoardingPass(string &filter, Flight* thisFlight) {
+vector<string> Graph::printBoardingPass(string &filter, Flight* thisFlight) {
+    vector<string> final;
     if (filter.empty() || thisFlight == nullptr) {       //either invalid filter, or no boarding pass to print because they just wanted info
         cout << "No Boarding Pass to Print." << endl << endl;
+        return final;       //nothing to print
     }
     else {      //flight exists and a valid filter was passed in
         // print out all relevant graph info by accessing the graph from map
         //thinking sfml can print this out on ticket
         cout << "Based on " << filter << " flight filter, the best flight(s) for you is:" << endl;
         cout << "Flight number: " << thisFlight->flightNumber << endl;
-        cout << "Origin City: " << thisFlight->originCity << endl;
-        cout << "Destination City: " << thisFlight->destinationCity << endl << endl;
+        cout << "Origin: " << thisFlight->originCity << " ," << thisFlight->originCountry <<  endl;
+        cout << "Destination: " << thisFlight->destinationCity << " ," << thisFlight->destCountry <<  endl << endl;
         cout << "Date: " << thisFlight->date << endl;
         cout << "Departure Time: " << thisFlight->time << endl;
         cout << "Time of Travel: " << thisFlight->duration << endl;
         cout << "Distance of Travel: " << thisFlight->distance << endl;
         cout << "Time Zone Difference: " << thisFlight->timeDiff << endl << endl;
         cout << "The Price for This Flight is: " << thisFlight->price << endl << endl;
+
+        final.push_back(thisFlight->flightNumber);      //push back all flight info into a vector so window of printing boarding pass can be easily achieved
+        final.push_back(thisFlight->originCity);
+        final.push_back(thisFlight->originCountry);
+        final.push_back(thisFlight->destinationCity);
+        final.push_back(thisFlight->destCountry);
+        final.push_back(thisFlight->month);
+        final.push_back(thisFlight->date);
+        final.push_back(thisFlight->time);
+        final.push_back(thisFlight->duration);
+        final.push_back(thisFlight->distance);
+        final.push_back(thisFlight->timeDiff);
+        final.push_back(to_string(thisFlight->price));
     }
+    return final;
 }
 
 void Graph::readCSVFile(string filename){
