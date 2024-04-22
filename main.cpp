@@ -2,24 +2,34 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <SFML/Graphics.hpp>
 #include "generalData.h"
+#include "TextureManager.h"
 #include <algorithm>
-#include <map>
 #include "FrontEnd.h"
+#include <map>
 using namespace std;
 
 
 int main() {
 
-    WorldInfo test;
-    test.writeFile("proj3DataTest.csv");
+    WelcomeScreen welcome;
+    MapScreen map;
+    //Flight testFlight((string &) "Tampa", (string &)"USA", (string &)"Paris", (string &)"France", 1200, 800, 6, 6.5, (string &)"April",(string &) "25", (string &)"8:30 AM", true, (string &)"12345");
 
-    // Initialize your application interface
-    FrontEnd app(800, 600, "Boarding Pass Viewer");
-    // Load the Roboto font
-    app.loadFont("fonts/Roboto-Regular.ttf");  // Ensure the path is correct
-    // Run the application
-    app.run();
+    //uh.displayWindow();
+    string command = welcome.showWelcomeScreen();
+    vector<string> flightInfo;
+    if(command == "map"){
+       flightInfo =  map.displayWindow();
+    }
+    if(flightInfo.size() == 0){
+        return 0;
+    }else{
+        Ticket toPrint(flightInfo);
+        toPrint.draw();
+    }
+
 
     return 0;
 }
