@@ -95,7 +95,7 @@ bool Graph::international(string &origin, string &dest) {
 }
 
 vector<string> Graph::minCity(string &origin, int &budget) {        //use a bfs to get the minimum number of cities we can visit with our budget
-//returns a vector of flights
+//returns a vector of string of cities
     queue<pair<string,int>> q;      //have a queue with cities and prices to visit that city
     unordered_set<string> visited;        //have an unordered set that keeps track of all the visited cities
     vector<string> final;           //final vector of cities we will return
@@ -130,6 +130,51 @@ vector<string> Graph::minCity(string &origin, int &budget) {        //use a bfs 
     return final;       //if we make it all the way here we could visit all cities with our budget
 }
 
+vector<string> Graph::path(string &origin, string &dest) {      //bfs to see if a path exists, firsts checks if a direct exists
+    vector<string> final;
+    vector<string> noPath(1, origin);
+    queue<string> q;      //have a queue with cities and prices to visit that city
+    unordered_set<string> visited;        //have an unordered set that keeps track of all the visited cities
+
+    q.push(origin);
+    visited.insert(origin);
+
+    if (g[n(origin)][n(dest)] != nullptr) {     //checks if there is a direct flight
+        final.push_back(origin);        //if so push back origin and destination cities into final vector
+        final.push_back(dest);
+        return final;       //return two cities
+    }
+
+    while (!q.empty()) {        //while the queue is not empty
+        string current = q.front();
+        q.pop();
+        final.push_back(current);
+
+        for (int i = 0; i < 100; i++){      //we know our matrix is 100x100
+            Flight* thisFlight = g[n(current)][i];       //set a temp flight pointer to this specific flight in our graph
+
+            if (thisFlight == nullptr) {        //if it's null just go to next fljght
+                continue;
+            }
+
+            if (thisFlight->destinationCity == dest) {      //if the destination matches the wanted destination
+                final.push_back(dest);      //push back and return
+                return final;
+            }
+
+            if(visited.count(thisFlight->destinationCity) == 0) {       //if our set doesn't have the destination city
+                visited.insert(thisFlight->destinationCity);        //add it to our visited set
+                q.push(thisFlight->destinationCity);      //push it into our queue
+            }
+
+            delete thisFlight;      //handling memory, so delete this temporary pointer
+        }
+    }
+
+    return noPath;  //if we made it here that means we never reached our destination
+}
+
+
 void Graph::getBest(string &filter, string &origin, string &dest) {
     Flight* thisFlight = nullptr;
 
@@ -163,6 +208,23 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
             cout << "Flight is domestic. No passport is needed." << endl;
         }
     }
+    else if(filter == "Flight path") {
+        vector<string> cities = path(origin,dest);
+
+        if (cities.size() == 1) {
+            cout << "No path exists between " << origin << " and " << dest << ". " << endl;
+        }
+        else if (cities.size() == 2) {
+            cout << "A direct flight exists between " << origin << " and " << dest << ". " << endl;
+        }
+        else {
+            cout << "One suggested path found between " << origin << " and " << dest << " is: " << endl;
+
+            for (int i = 0; i < cities.size(); i++) {
+                cout << i+1 << ". " << cities.at(i) << endl;
+            }
+        }
+    }
     else if (filter == "Month") {
         string temp;
         cout << "What month are you looking at flying? " << endl;
@@ -178,11 +240,11 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
         cout << "What's your budget? " << endl;
         cin >> temp;
         vector<string> destinations = minCity(origin, temp);
-        
+
         if (destinations.size() == 1) {
             cout << "You cannot travel to any destination from " << origin << " with this budget. " << endl;
         }
-        
+
         else {
             cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to is: " << endl;
             for (int i = 1; i < destinations.size(); i++) {
@@ -193,10 +255,10 @@ void Graph::getBest(string &filter, string &origin, string &dest) {
     else {
         filter = "";
     }
-    
+
     cout << endl;
     printBoardingPass(filter, thisFlight);
-    
+
     delete thisFlight;
 }
 
@@ -251,3 +313,4 @@ void Graph::readCSVFile(string filename){
 int Graph::n(string city) {
     return cityNamesMap[city];
 }
+
