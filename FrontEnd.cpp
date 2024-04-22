@@ -56,6 +56,7 @@ string WelcomeScreen::showWelcomeScreen() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
+                return "";
             }
 
 
@@ -110,9 +111,6 @@ string WelcomeScreen::showWelcomeScreen() {
     }
 }
 
-
-
-
 void MapScreen::loadPins() {
     ifstream file;
     file.open("cityCoordinates.csv");
@@ -138,13 +136,13 @@ string MapScreen::getCityFromClick(sf::RenderWindow& window, int x, int y) {
     for(int i = 0; i < cityPts.size(); i++){
         sf::Sprite temp = cityPts[i];
         if(cityPts[i].getGlobalBounds().contains(x, y)){
-            cout << "line " << (2*i) + 1 << endl;
-            cout << "coordinates " << x << ", " << y << endl;
-            return cityNames[i] + "\n";
+//            cout << "line " << (2*i) + 1 << endl;
+//            cout << "coordinates " << x << ", " << y << endl;
+            return cityNames[i];
         }
     }
 
-    return "NA\n";
+    return "NA";
 }
 
 void MapScreen::writeCityLocations(int x, int y ) {
@@ -157,38 +155,167 @@ MapScreen::MapScreen() {
     map.setTexture(mapTexture);
     map.setOrigin(0,0);
 
+    font.loadFromFile("arial.ttf");
+
     zoomInT.loadFromFile("images/zoom_in.jpg");
-    zoomOutT.loadFromFile("images/zoom_out.jpg");
-
-    upT.loadFromFile("images/up.png");
-    dT.loadFromFile("images/down.png");
-    RT.loadFromFile("images/right.png");
-    LT.loadFromFile("images/left.png");
-
-    pinT.loadFromFile("images/red_pin.png");
-
     zoomIn.setTexture(zoomInT);
     zoomIn.setPosition(40, 300);
 
+    zoomOutT.loadFromFile("images/zoom_out.jpg");
     zoomOut.setTexture(zoomOutT);
     zoomOut.setPosition(40, 360);
 
-    loadPins();
-
-
+    upT.loadFromFile("images/up.png");
     up.setTexture(upT);
     up.setPosition(60, 550);
+
+    dT.loadFromFile("images/down.png");
     down.setTexture(dT);
     down.setPosition(60, 620);
+
+    RT.loadFromFile("images/right.png");
     right.setTexture(RT);
     right.setPosition(95, 585);
+
+    LT.loadFromFile("images/left.png");
     left.setTexture(LT);
     left.setPosition(25, 585);
 
-    ifstream file;
-    file.open("cityCoordinates.csv");
-    file.close();
+    pinT.loadFromFile("images/red_pin.png");
+    loadPins();
 
+    promptT.loadFromFile("images/prompt.jpg");
+    promptBorder.setTexture(promptT);
+    promptBorder.setPosition(1250, 550);
+    promptBorder.setScale(1.5, 0.8);
+
+
+    yesT.loadFromFile("images/check.jpg");
+    yes.setTexture(yesT);
+    yes.setPosition(1250,640);
+
+    noT.loadFromFile("images/X.jpg");
+    no.setTexture(noT);
+    no.setPosition(1300, 640);
+
+    select1.setString("Click on a city (origin city).");
+    select1.setFillColor(sf::Color::Black);
+    select1.setStyle(sf::Text::Bold);
+    select1.setFont(font);
+    select1.setCharacterSize(25);
+    setTextRight(select1, 1360, 590);
+
+    youSelected.setString("Confirm your selection of: ");
+    youSelected.setFillColor(sf::Color::Black);
+    youSelected.setStyle(sf::Text::Bold);
+    youSelected.setFont(font);
+    youSelected.setCharacterSize(25);
+    setTextRight(youSelected, 1250, 590);
+
+    select2.setString("Click on a second city.");
+    select2.setFillColor(sf::Color::Black);
+    select2.setStyle(sf::Text::Bold);
+    select2.setFont(font);
+    select2.setCharacterSize(25);
+    setTextRight(select2, 1360, 590);
+
+    optionList.setString("Choose from one of the following options:");
+    optionList.setFillColor(sf::Color::Black);
+    optionList.setStyle(sf::Text::Bold);
+    optionList.setFont(font);
+    optionList.setCharacterSize(25);
+    setTextRight(optionList, 1360, 530);
+
+    selectAnother.setString("Select a destination");
+    selectAnother.setFillColor(sf::Color::Black);
+    selectAnother.setStyle(sf::Text::Bold);
+    selectAnother.setFont(font);
+    selectAnother.setCharacterSize(25);
+    setTextRight(selectAnother, 1450, 540);
+
+    cheapDirect.setString("Find the cheapest direct flight from here");
+    cheapDirect.setFillColor(sf::Color::Black);
+    cheapDirect.setStyle(sf::Text::Bold);
+    cheapDirect.setFont(font);
+    cheapDirect.setCharacterSize(25);
+    setTextRight(cheapDirect, 1450, 570);
+
+    cheapIntl.setString("Find the cheapest international flight from here");
+    cheapIntl.setFillColor(sf::Color::Black);
+    cheapIntl.setStyle(sf::Text::Bold);
+    cheapIntl.setFont(font);
+    cheapIntl.setCharacterSize(25);
+    setTextRight(cheapIntl, 1450, 600);
+
+    cheapInMonth.setString("Find the cheapest flight in a month of your choice from here");
+    cheapInMonth.setFillColor(sf::Color::Black);
+    cheapInMonth.setStyle(sf::Text::Bold);
+    cheapInMonth.setFont(font);
+    cheapInMonth.setCharacterSize(25);
+    setTextRight(cheapInMonth, 1450, 630);
+
+    minWBudget.setString("Find the minimum number of cities you can travel to within a certain budget from here.");
+    minWBudget.setFillColor(sf::Color::Black);
+    minWBudget.setStyle(sf::Text::Bold);
+    minWBudget.setFont(font);
+    minWBudget.setCharacterSize(25);
+    setTextRight(minWBudget, 1450, 660);
+
+    checkDirect.setString("Check for a direct flight between:");
+    checkDirect.setFillColor(sf::Color::Black);
+    checkDirect.setStyle(sf::Text::Bold);
+    checkDirect.setFont(font);
+    checkDirect.setCharacterSize(25);
+    setTextRight(checkDirect, 1450, 540);
+
+    getPass.setString("Print my boarding pass for: ");
+    getPass.setFillColor(sf::Color::Black);
+    getPass.setStyle(sf::Text::Bold);
+    getPass.setFont(font);
+    getPass.setCharacterSize(25);
+    setTextRight(getPass, 1450, 570);
+
+
+}
+
+void MapScreen::putPromptsToScreen(sf::RenderWindow &window, string interactionStatus) {
+    string toWrite = "";
+    if(interactionStatus == "0"){
+        setTextRight(select1, 1450, 600);
+        window.draw(select1);
+
+    } else if(interactionStatus == "confirm1" || interactionStatus == "confirm2"){
+        toWrite = "Confirm your selection of: " + placeHold;
+        youSelected.setString(toWrite);
+        setTextRight(youSelected, 1450, 600);
+        window.draw(youSelected);
+        window.draw(yes);
+        window.draw(no);
+
+    }else if(interactionStatus == "1"){
+        setTextRight(optionList, 1450, 500);
+        window.draw(optionList);
+        window.draw(selectAnother);
+        window.draw(cheapDirect);
+        window.draw(cheapIntl);
+        window.draw(cheapInMonth);
+        window.draw(minWBudget);
+
+    }else if(interactionStatus == "2"){
+        setTextRight(optionList, 1450, 500);
+        window.draw(optionList);
+        checkDirect.setString("Check for a direct flight between: " + origin + " and " + dest);
+        setTextRight(checkDirect, 1450, 540);
+        window.draw(checkDirect);
+
+        getPass.setString("Print my boarding pass for: " + origin + " to " + dest);
+        setTextRight(getPass, 1450, 570);
+        window.draw(getPass);
+    }else if(interactionStatus == "click second"){
+        setTextRight(select2, 1450, 600);
+        window.draw(select2);
+
+    }
 }
 
 void MapScreen::displayWindow() {
@@ -201,7 +328,9 @@ void MapScreen::displayWindow() {
     buttonView.setSize(window.getSize().x, window.getSize().y);
     int shiftL = 0, shiftR = 0, shiftU = 0, shiftD = 0, zIn = 0, zOut = 0;
 
-    int track = 45;
+
+    string interaction = "0";
+
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -241,23 +370,54 @@ void MapScreen::displayWindow() {
                     mapView.move(50,0);
                     shiftL -= 1;
                     shiftR += 1;
+                }else if(yes.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    if(interaction == "confirm1"){
+                        origin = placeHold;
+                        interaction = "1";
+                    }else if(interaction == "confirm2"){
+                        interaction = "2";
+                        dest = placeHold;
+                    }
+                }else if(no.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    if(interaction == "confirm1"){
+                        interaction = "0";
+                    }else if(interaction == "confirm2"){
+                        interaction = "click second";
+                    }
+                }else if(selectAnother.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+                    interaction = "click second";
+                }else if(cheapDirect.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+
+
+                }else if(cheapInMonth.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+
+
+                }else if(cheapInMonth.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+
+
+                }else if(minWBudget.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+
+
+                }else if(checkDirect.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+
+
+                }else if(getPass.getGlobalBounds().contains(window.mapPixelToCoords(mouse))){
+
+
                 }
 
                 else{
 
                     int totalClickX = window.mapPixelToCoords(mouse, mapView).x;
                     int totalClickY =  window.mapPixelToCoords(mouse, mapView).y;
-                    cout << totalClickX << ", " << totalClickY << endl;
-                    string chosenCity = getCityFromClick(window, totalClickX, totalClickY);
-                    cout << chosenCity;
-
-//                    cout << "Click on: " << cityNames[track + 1] << endl;
-//                    sf::Sprite temp;
-//                    temp.setTexture(pinT);
-//                    temp.setPosition(totalClickX, totalClickY);
-//                    temp.setOrigin(pinT.getSize().x/2, pinT.getSize().y-5);
-//                    cityPts.push_back(temp);
-//
+                    //cout << totalClickX << ", " << totalClickY << endl;
+                    placeHold = getCityFromClick(window, totalClickX, totalClickY);
+                    //cout << placeHold << endl;
+                    if(placeHold != "NA" && (interaction == "0")){
+                        interaction = "confirm1";
+                    }else if(placeHold != "NA" && interaction == "click second"){
+                        interaction = "confirm2";
+                    }
 
 
                 }
@@ -278,6 +438,9 @@ void MapScreen::displayWindow() {
         window.draw(down);
         window.draw(left);
         window.draw(right);
+        //window.draw(promptBorder);
+        putPromptsToScreen(window, interaction);
+        //window.draw(select1);
 
 
         window.display();
@@ -286,19 +449,15 @@ void MapScreen::displayWindow() {
 }
 
 
-Ticket::Ticket(int width, int height, const std::string& title) :
-        backgroundColor(sf::Color::White), textColor(sf::Color::Black), outlineColor(sf::Color::Black) {
-    window.create(sf::VideoMode(width, height), title, sf::Style::Close);
-}
 
-void Ticket::loadFont(const std::string& fontPath) {
+void TicketScreen::loadFont(const std::string& fontPath) {
     if (!font.loadFromFile(fontPath)) {
         std::cerr << "Could not load font at: " << fontPath << std::endl;
         exit(EXIT_FAILURE);
     }
 }
 
-void Ticket::drawBoardingPass(const Flight flight) {
+void TicketScreen::drawBoardingPass(const Flight flight) {
     // Clear previous content
     window.clear(backgroundColor);
 
@@ -363,17 +522,3 @@ void Ticket::drawBoardingPass(const Flight flight) {
 //        drawBoardingPass(selectedFlight); // Draw the selected flight's boarding pass
 //    }
 //}
-
-void Ticket::handleUserInput(std::vector<Flight>& availableFlights, Flight& selectedFlight) {
-    int index = 0;
-    std::cout << "Available Flights:" << std::endl;
-    for (size_t i = 0; i < availableFlights.size(); ++i) {
-        std::cout << i + 1 << ": From " << availableFlights[i].originCity
-                  << " to " << availableFlights[i].destinationCity << std::endl;
-    }
-    std::cout << "Enter the number of the flight you want to select: ";
-    std::cin >> index;
-    if (index > 0 && index <= availableFlights.size()) {
-        selectedFlight = availableFlights[index - 1];
-    }
-}

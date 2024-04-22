@@ -16,10 +16,29 @@ struct MapScreen{
     sf::Texture mapTexture = TextureManager::getTexture("physical-world-map");
     sf::Texture zoomInT, zoomOutT, pinT;
     sf::Texture upT, dT, RT, LT;
+    sf::Texture yesT, noT;
+    sf::Texture promptT;
 
-    sf::Sprite map, zoomIn, zoomOut, pin, pin2, up, down, left, right;
+    sf::Sprite map, zoomIn, zoomOut, pin, pin2, up, down, left, right, yes, no;
 
     sf::View mapView, buttonView;
+
+    sf::Font font;
+    sf::Sprite promptBorder;
+
+    sf::Text select1;
+    sf::Text youSelected;
+    sf::Text optionList;
+    sf::Text selectAnother;
+    sf::Text select2;
+    sf::Text cheapDirect;
+    sf::Text cheapIntl;
+    sf::Text cheapInMonth;
+    sf::Text minWBudget;
+    sf::Text checkDirect;
+    sf::Text getPass;
+
+    string origin, dest, placeHold;
 
     vector<sf::Sprite> cityPts;
     vector<string> cityNames = {"Tampa", "Gainesville", "Paris", "London", "New York",
@@ -49,19 +68,34 @@ struct MapScreen{
     string getCityFromClick(sf::RenderWindow& window, int x, int y);
     void loadPins();
     void writeCityLocations(int x, int y);
+    void setText(sf::Text &text, float x, float y){
+        sf::FloatRect textRect = text.getLocalBounds();
+        text.setOrigin(textRect.left + textRect.width/2.0f,
+                       textRect.top + textRect.height/2.0f);
+        text.setPosition(sf::Vector2f(x, y));
+    }
+    void setTextRight(sf::Text &text, float x, float y){
+        sf::FloatRect textRect = text.getLocalBounds();
+        text.setOrigin(textRect.width, textRect.height);
+        text.setPosition(sf::Vector2f(x, y));
+    }
+    void putPromptsToScreen(sf::RenderWindow& window, string interactionStatus);
 };
 
-struct Ticket{
+struct TicketScreen{
     sf::RenderWindow window;
     sf::Font font;
     sf::Color backgroundColor = sf::Color::White;
     sf::Color textColor = sf::Color::Black;
     sf::Color outlineColor = sf::Color::Black;
 
-    Ticket();
-    Ticket(int width, int height, const std::string& title);
-    void run();
+    TicketScreen();
     void loadFont(const std::string& fontPath);
     void drawBoardingPass(const Flight flight);
-    void handleUserInput(std::vector<Flight>& availableFlights, Flight& selectedFlight);
+    void setText(sf::Text &text, float x, float y){
+        sf::FloatRect textRect = text.getLocalBounds();
+        text.setOrigin(textRect.left + textRect.width/2.0f,
+                       textRect.top + textRect.height/2.0f);
+        text.setPosition(sf::Vector2f(x, y));
+    }
 };
