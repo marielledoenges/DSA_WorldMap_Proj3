@@ -111,7 +111,6 @@ vector<string> Graph::minCity(string &origin, int &budget) {        //use a bfs 
 
     visited.insert(origin);     //mark the origin as visited
     q.emplace(origin, 0);       //place back the origin with a price of zero
-    final.push_back(origin);
 
     while (!q.empty()) {
         pair<string, int> currCity = q.front();     //our current city is going to be the one at the front of the queue
@@ -254,9 +253,10 @@ vector<string> Graph::getBest(string filter, string origin, string dest, string 
         }
 
         else {
-            cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to is: " << endl;
+            cout << "Starting at " << origin << " the minimum number of cities you can consecutively fly to for ";
+            cout << otherInfo << " is: " << endl;
             for (int i = 1; i < destinations.size(); i++) {
-                cout << "\tab" << i << ". " << destinations.at(i) << endl;
+                cout << "\t" << i << ". " << destinations.at(i) << endl;
             }
             return destinations;
         }
